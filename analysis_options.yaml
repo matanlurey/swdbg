@@ -1,0 +1,7 @@
+include: package:neodart/neodart.yaml
+
+linter:
+  rules:
+    # These are annoying lints to apply while developing.
+    prefer_const_constructors: false
+    prefer_const_literals_to_create_immutables: false
