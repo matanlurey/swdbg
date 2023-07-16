@@ -27,7 +27,6 @@ final class _AddCardDialogState extends State<AddCardDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Card'),
       content: CardPicker(
         faction: widget.faction!,
         onCardSelected: (card) {

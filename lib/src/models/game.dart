@@ -393,11 +393,27 @@ final class GalaxyCard {
   /// If this is `0`, then this card is a _starter_ card.
   final int cost;
 
+  /// Amount of damage this card deals.
+  final int attack;
+
+  /// Number of resources this card generates.
+  final int resources;
+
+  /// Amount of force this card generates.
+  final int force;
+
+  /// Amount of damage required to destroy this card in a faction's play area.
+  final int? hitPoints;
+
   /// Create a new card.
   const GalaxyCard({
     required this.faction,
     required this.title,
     required this.cost,
+    this.attack = 0,
+    this.resources = 0,
+    this.force = 0,
+    this.hitPoints,
   });
 
   /// Whether this card is a starter card.

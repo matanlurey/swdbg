@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:swdbg_log_app/src/widgets/faction_icon.dart';
 
 import '/src/models/game.dart';
 
@@ -47,7 +48,7 @@ final class DeckListView extends StatelessWidget {
       return a.card.title.compareTo(b.card.title);
     });
 
-    return ListView.builder(
+    return SliverList.builder(
       itemCount: cardItems.length,
       itemBuilder: (context, index) {
         final item = cardItems[index];

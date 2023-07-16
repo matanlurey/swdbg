@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:swdbg_log_app/src/widgets/deck_list_view.dart';
 
 import '/src/models/game.dart';
 import '/src/widgets/add_card_dialog.dart';
+import '/src/widgets/deck_list_view.dart';
+import '/src/widgets/deck_summary_grid.dart';
 import '/src/widgets/faction_icon.dart';
 import '/src/widgets/faction_picker.dart';
 
@@ -79,44 +80,52 @@ final class _PlayingAsState extends State<_PlayingAs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('${deck.length} Cards'),
-          leading: Padding(
-            child: SizedBox(
-              height: 40,
-              width: 40,
-              child: FactionIcon(faction: widget.faction),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text('${deck.length} Cards'),
+              background: Opacity(
+                opacity: 0.3,
+                child: Padding(
+                  child: FactionIcon(faction: widget.faction),
+                  padding: const EdgeInsets.all(8),
+                ),
+              ),
             ),
-            padding: const EdgeInsets.all(8),
           ),
-          leadingWidth: 40,
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            // Open a dialog to add a card to the deck.
-            await showDialog<void>(
-              context: context,
-              builder: (_) {
-                return AddCardDialog(
-                  faction: widget.faction,
-                  onCardAdded: (card) {
-                    setState(() {
-                      deck.add(card);
-                    });
-                  },
-                );
-              },
-            );
-          },
-          child: const Icon(Icons.add),
-        ),
-        body: DeckListView(
-          deck: deck,
-          onCardRemoved: (card) {
-            setState(() {
-              deck.remove(card);
-            });
-          },
-        ));
+          // DeckSummaryGrid(
+          //  deck: deck,
+          // ),
+          DeckListView(
+            deck: deck,
+            onCardRemoved: (card) {
+              setState(() {
+                deck.remove(card);
+              });
+            },
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // Open a dialog to add a card to the deck.
+          await showDialog<void>(
+            context: context,
+            builder: (_) {
+              return AddCardDialog(
+                faction: widget.faction,
+                onCardAdded: (card) {
+                  setState(() {
+                    deck.add(card);
+                  });
+                },
+              );
+            },
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 }
