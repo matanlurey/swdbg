@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '/src/models/game.dart';
+import '/src/models/summary.dart';
 
 /// Shows aggregate information about a deck.
 ///
@@ -20,25 +21,26 @@ final class DeckSummaryGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final summary = DeckSummary.fromDeck(deck);
     return SliverGrid.count(
       crossAxisCount: 2,
       childAspectRatio: 2,
       children: [
         _DeckSummaryGridItem(
           label: 'Attack',
-          value: 0,
+          value: 5 * summary.attack / deck.length,
         ),
         _DeckSummaryGridItem(
-          label: 'Defense',
-          value: 0,
+          label: 'Hit Points',
+          value: 5 * summary.hitPoints / deck.length,
         ),
         _DeckSummaryGridItem(
           label: 'Resources',
-          value: 0,
+          value: 5 * summary.resources / deck.length,
         ),
         _DeckSummaryGridItem(
           label: 'Force',
-          value: 0,
+          value: 5 * summary.force / deck.length,
         ),
       ],
     );
@@ -59,7 +61,7 @@ final class _DeckSummaryGridItem extends StatelessWidget {
     return Card(
       child: ListTile(
         title: Text(label),
-        subtitle: Text(value.toStringAsFixed(2)),
+        subtitle: Text(value.isNaN ? '0.00' : value.toStringAsFixed(2)),
       ),
     );
   }

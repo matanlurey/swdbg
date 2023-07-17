@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:swdbg_log_app/src/widgets/faction_icon.dart';
 
 import '/src/models/game.dart';
 
@@ -55,9 +54,14 @@ final class DeckListView extends StatelessWidget {
         return ListTile(
           leading: CircleAvatar(
             child: Text(item.card.cost.toString()),
+            radius: 20,
+            backgroundColor: item.card.faction.color,
+            foregroundColor: Colors.black,
           ),
           title: Text(item.card.title),
-          subtitle: Text('${item.count}x'),
+          subtitle: Text(
+            '${item.count}x ${item.card.hitPoints != null ? 'Capital Ship' : 'Unit'}',
+          ),
           trailing: IconButton(
             icon: const Icon(Icons.remove_circle_outline),
             onPressed: () {

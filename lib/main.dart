@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '/src/models/game.dart';
@@ -22,6 +26,7 @@ final class LogApp extends StatefulWidget {
 
 final class _LogAppState extends State<LogApp> {
   Faction? _faction;
+  late List<GalaxyCard> _initialDeck;
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +34,25 @@ final class _LogAppState extends State<LogApp> {
     if (_faction == null) {
       body = Scaffold(
         body: FactionPicker(
-          onFactionSelected: (faction) {
+          onFactionSelected: (faction, initialDeck) {
             setState(() {
               _faction = faction;
+              _initialDeck = initialDeck;
             });
           },
         ),
       );
     } else {
       body = Center(
-        child: _PlayingAs(faction: _faction!),
+        child: _PlayingAs(
+          faction: _faction!,
+          initialDeck: _initialDeck,
+          onReset: () {
+            setState(() {
+              _faction = null;
+            });
+          },
+        ),
       );
     }
     return MaterialApp(
@@ -52,10 +66,18 @@ final class _PlayingAs extends StatefulWidget {
   /// Create a new playing as widget.
   const _PlayingAs({
     required this.faction,
+    required this.onReset,
+    this.initialDeck,
   });
 
   /// The faction the user is playing as.
   final Faction faction;
+
+  /// The initial deck to start with.
+  final List<GalaxyCard>? initialDeck;
+
+  /// Function to call if the user wants to reset their deck.
+  final VoidCallback onReset;
 
   @override
   State<StatefulWidget> createState() => _PlayingAsState();
@@ -67,14 +89,7 @@ final class _PlayingAsState extends State<_PlayingAs> {
   @override
   void initState() {
     super.initState();
-    switch (widget.faction) {
-      case Faction.rebel:
-        deck.addAll(GalaxyCard.rebelStarter);
-      case Faction.imperial:
-        deck.addAll(GalaxyCard.imperialStarter);
-      case Faction.neutral:
-        throw UnsupportedError('Cannot play as neutral faction');
-    }
+    deck.addAll(widget.initialDeck ?? []);
   }
 
   @override
@@ -83,6 +98,26 @@ final class _PlayingAsState extends State<_PlayingAs> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            backgroundColor: widget.faction.color,
+            actions: [
+              // Export the deck.
+              PopupMenuButton(itemBuilder: (_) {
+                return [
+                  PopupMenuItem(
+                    child: const Text('Export'),
+                    value: 'export',
+                    onTap: () async {
+                      await _exportDeck(widget.faction, deck);
+                    },
+                  ),
+                  PopupMenuItem(
+                    child: const Text('Reset'),
+                    value: 'reset',
+                    onTap: widget.onReset,
+                  ),
+                ];
+              }),
+            ],
             flexibleSpace: FlexibleSpaceBar(
               title: Text('${deck.length} Cards'),
               background: Opacity(
@@ -94,9 +129,9 @@ final class _PlayingAsState extends State<_PlayingAs> {
               ),
             ),
           ),
-          // DeckSummaryGrid(
-          //  deck: deck,
-          // ),
+          DeckSummaryGrid(
+            deck: deck,
+          ),
           DeckListView(
             deck: deck,
             onCardRemoved: (card) {
@@ -108,6 +143,7 @@ final class _PlayingAsState extends State<_PlayingAs> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: widget.faction.color,
         onPressed: () async {
           // Open a dialog to add a card to the deck.
           await showDialog<void>(
@@ -128,4 +164,27 @@ final class _PlayingAsState extends State<_PlayingAs> {
       ),
     );
   }
+}
+
+Future<void> _exportDeck(Faction faction, List<GalaxyCard> deck) async {
+  // Convert the deck to a (pretty) JSON string.
+  final output = JsonEncoder.withIndent('  ').convert({
+    'faction': faction.name,
+    'deck': deck.map((c) => c.title).toList(),
+  });
+
+  // Pick an output file.
+  final name = await FilePicker.platform.saveFile(
+    fileName: 'deck.json',
+    allowedExtensions: ['json'],
+    dialogTitle: 'Export Deck',
+    type: FileType.custom,
+  );
+
+  if (name == null) {
+    return;
+  }
+
+  // Write the file.
+  await File(name).writeAsString(output);
 }

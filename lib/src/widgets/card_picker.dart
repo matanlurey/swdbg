@@ -41,7 +41,8 @@ final class CardPicker extends StatelessWidget {
       optionsBuilder: (textEditingValue) {
         return cards.where((card) {
           final value = textEditingValue.text.trim().toLowerCase();
-          return card.title.toLowerCase().startsWith(value);
+          final names = card.title.toLowerCase().split(' ');
+          return names.any((name) => name.startsWith(value));
         });
       },
       displayStringForOption: (card) => card.title,
