@@ -24,7 +24,7 @@ final class DeckSummaryGrid extends StatelessWidget {
     final summary = DeckSummary.fromDeck(deck);
     return SliverGrid.count(
       crossAxisCount: 2,
-      childAspectRatio: 2,
+      childAspectRatio: 2.5,
       children: [
         _DeckSummaryGridItem(
           label: 'Attack',
@@ -61,7 +61,8 @@ final class _DeckSummaryGridItem extends StatelessWidget {
     return Card(
       child: ListTile(
         title: Text(label),
-        subtitle: Text(value.isNaN ? '0.00' : value.toStringAsFixed(2)),
+        subtitle: Text('per turn'),
+        trailing: Text(value.isNaN ? '0.00' : value.toStringAsFixed(2)),
       ),
     );
   }
