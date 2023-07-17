@@ -36,6 +36,33 @@ enum Faction {
   }
 }
 
+/// A trait on a card.
+enum Trait {
+  /// A Bounty Hunter.
+  bountyHunter,
+
+  /// A Fighter.
+  fighter,
+
+  /// A Jedi.
+  jedi,
+
+  /// An Officer.
+  officer,
+
+  /// A Scoundrel.
+  scoundrel,
+
+  /// A Transport.
+  transport,
+
+  /// A Trooper.
+  trooper,
+
+  /// A Vehicle.
+  vehicle,
+}
+
 /// A card in the game.
 @immutable
 final class GalaxyCard {
@@ -51,6 +78,9 @@ final class GalaxyCard {
     title: 'Rebel Trooper',
     cost: 0,
     attack: 2,
+    traits: {
+      Trait.trooper,
+    },
   );
 
   static const _templeGuardian = GalaxyCard(
@@ -73,6 +103,9 @@ final class GalaxyCard {
     title: 'Stormtrooper',
     cost: 0,
     attack: 2,
+    traits: {
+      Trait.trooper,
+    },
   );
 
   static const _inquisitor = GalaxyCard(
@@ -116,6 +149,7 @@ final class GalaxyCard {
       cost: 4,
       attack: 1,
       resources: 1,
+      hitPoints: 4,
     ),
     GalaxyCard(
       faction: Faction.neutral,
@@ -138,6 +172,9 @@ final class GalaxyCard {
       title: 'Z-95 Headhunter',
       cost: 1,
       attack: 2,
+      traits: {
+        Trait.fighter,
+      },
       // TODO: Add draw card if opponent has a capital ship.
     ),
     GalaxyCard(
@@ -152,6 +189,9 @@ final class GalaxyCard {
       title: 'Rodian Gunslinger',
       cost: 2,
       attack: 2,
+      traits: {
+        Trait.bountyHunter,
+      },
       // TODO: Add 2 attack if attacking galaxy row.
     ),
     GalaxyCard(
@@ -166,6 +206,9 @@ final class GalaxyCard {
       title: 'Fang Fighter',
       cost: 3,
       attack: 3,
+      traits: {
+        Trait.fighter,
+      },
       // TODO: Add place into hand and draw a card if force with you.
     ),
     GalaxyCard(
@@ -180,6 +223,9 @@ final class GalaxyCard {
       title: 'Quarren Mercenary',
       cost: 4,
       attack: 4,
+      traits: {
+        Trait.trooper,
+      },
       // TODO: Add exile 1 (2 if force with you) when purchased.
     ),
     GalaxyCard(
@@ -187,6 +233,9 @@ final class GalaxyCard {
       title: 'HWK-290',
       cost: 4,
       resources: 4,
+      traits: {
+        Trait.transport,
+      },
       // TODO: Add exile for 4 repair.
     ),
     GalaxyCard(
@@ -204,6 +253,9 @@ final class GalaxyCard {
       cost: 7,
       attack: 4,
       resources: 3,
+      traits: {
+        Trait.vehicle,
+      },
       // TODO: Add put bounty hunter from discard into hand when played.
     ),
     GalaxyCard(
@@ -211,6 +263,9 @@ final class GalaxyCard {
       title: 'Dengar',
       cost: 4,
       attack: 4,
+      traits: {
+        Trait.bountyHunter,
+      },
       // TODO: Add gain 2 resources when defeating unit in galaxy row.
     ),
     GalaxyCard(
@@ -219,6 +274,9 @@ final class GalaxyCard {
       cost: 6,
       attack: 3,
       resources: 3,
+      traits: {
+        Trait.scoundrel,
+      },
       // TODO: Add draw card, opponent discards card if force with you.
     ),
     GalaxyCard(
@@ -227,12 +285,18 @@ final class GalaxyCard {
       cost: 3,
       // TODO: Change to 2 of any resource ability.
       force: 2,
+      traits: {
+        Trait.officer,
+      },
     ),
     GalaxyCard(
       faction: Faction.neutral,
       title: 'Bossk',
       cost: 3,
       attack: 3,
+      traits: {
+        Trait.bountyHunter,
+      },
       // TODO: Add if defeat unit in galaxy row, gain 1 force.
     ),
     GalaxyCard(
@@ -240,6 +304,9 @@ final class GalaxyCard {
       title: 'IG-88',
       cost: 5,
       attack: 5,
+      traits: {
+        Trait.bountyHunter,
+      },
       // TODO: Add if defeat unit in galaxy row, exile 1 card.
     ),
     GalaxyCard(
@@ -282,6 +349,9 @@ final class GalaxyCard {
       title: 'Tie Fighter',
       cost: 1,
       attack: 2,
+      traits: {
+        Trait.fighter,
+      },
       // TODO: Add draw card if capital ship in play.
     ),
     GalaxyCard(
@@ -296,6 +366,9 @@ final class GalaxyCard {
       title: 'Scout Trooper',
       cost: 2,
       resources: 2,
+      traits: {
+        Trait.trooper,
+      },
       // TODO: Add reveal top card of galaxy deck to discard or gain 1 force.
     ),
     GalaxyCard(
@@ -303,6 +376,9 @@ final class GalaxyCard {
       title: 'Death Trooper',
       cost: 3,
       attack: 3,
+      traits: {
+        Trait.trooper,
+      },
       // TODO: Add gain 2 attack if force with you.
     ),
     GalaxyCard(
@@ -310,6 +386,9 @@ final class GalaxyCard {
       title: 'Tie Interceptor',
       cost: 3,
       attack: 3,
+      traits: {
+        Trait.fighter,
+      },
       // TODO: Add reveal top card to draw a card or discard.
     ),
     GalaxyCard(
@@ -318,12 +397,18 @@ final class GalaxyCard {
       cost: 4,
       // TODO: Replace with or repair 4.
       resources: 4,
+      traits: {
+        Trait.transport,
+      },
     ),
     GalaxyCard(
       faction: Faction.imperial,
       title: 'AT-ST',
       cost: 4,
       attack: 4,
+      traits: {
+        Trait.vehicle,
+      },
       // TODO: Add discard card in galaxy row.
     ),
     GalaxyCard(
@@ -331,6 +416,9 @@ final class GalaxyCard {
       title: 'AT-AT',
       cost: 6,
       attack: 6,
+      traits: {
+        Trait.vehicle,
+      },
       // TODO: Add place a trooper from discard pile into hand.
     ),
     GalaxyCard(
@@ -338,6 +426,9 @@ final class GalaxyCard {
       title: 'Admiral Piett',
       cost: 2,
       resources: 2,
+      traits: {
+        Trait.officer,
+      },
       // TODO: Add capital ships gain +1.
     ),
     GalaxyCard(
@@ -345,6 +436,9 @@ final class GalaxyCard {
       title: 'General Veers',
       cost: 4,
       attack: 4,
+      traits: {
+        Trait.officer,
+      },
       // TODO: Add draw a card if played a trooper or vehicle.
     ),
     GalaxyCard(
@@ -353,6 +447,9 @@ final class GalaxyCard {
       cost: 4,
       attack: 2,
       resources: 2,
+      traits: {
+        Trait.officer,
+      },
       // TODO: Add check top card, swap with galaxy row if force with you.
     ),
     GalaxyCard(
@@ -362,6 +459,9 @@ final class GalaxyCard {
       attack: 2,
       resources: 2,
       force: 2,
+      traits: {
+        Trait.officer,
+      },
       // TODO: Add purchase empire card for free, exile at end of turn.
     ),
     GalaxyCard(
@@ -370,6 +470,9 @@ final class GalaxyCard {
       cost: 5,
       attack: 3,
       resources: 2,
+      traits: {
+        Trait.bountyHunter,
+      },
       // TODO: Add draw a card, 2 if death star in play.
     ),
     GalaxyCard(
@@ -385,6 +488,9 @@ final class GalaxyCard {
       cost: 8,
       attack: 6,
       force: 2,
+      traits: {
+        Trait.jedi,
+      },
       // TODO: Add gain +4 attack if force with you.
     ),
 
@@ -420,6 +526,9 @@ final class GalaxyCard {
       title: 'X-Wing',
       cost: 3,
       attack: 3,
+      traits: {
+        Trait.fighter,
+      },
       // TODO: Add draw a card if force with you.
     ),
     GalaxyCard(
@@ -427,6 +536,9 @@ final class GalaxyCard {
       title: 'Y-Wing',
       cost: 1,
       attack: 2,
+      traits: {
+        Trait.fighter,
+      },
       // TODO: Add exile to deal 2 damage to capital ship or base.
     ),
     GalaxyCard(
@@ -434,6 +546,9 @@ final class GalaxyCard {
       title: 'Snowspeeder',
       cost: 2,
       attack: 2,
+      traits: {
+        Trait.vehicle,
+      },
       // TODO: Add opponent discards a card.
     ),
     GalaxyCard(
@@ -441,6 +556,9 @@ final class GalaxyCard {
       title: 'Duros Spy',
       cost: 2,
       resources: 2,
+      traits: {
+        Trait.trooper,
+      },
       // TODO: Add opponent discards a card or you gain 1 force.
     ),
     GalaxyCard(
@@ -448,6 +566,9 @@ final class GalaxyCard {
       title: 'Rebel Commando',
       cost: 3,
       attack: 3,
+      traits: {
+        Trait.trooper,
+      },
       // TODO: Add opponent discards a card and if force with you it's random.
     ),
     GalaxyCard(
@@ -455,6 +576,9 @@ final class GalaxyCard {
       title: 'U-Wing',
       cost: 4,
       resources: 3,
+      traits: {
+        Trait.transport,
+      },
       // TODO: Add if force with you repair 3.
     ),
     GalaxyCard(
@@ -462,6 +586,9 @@ final class GalaxyCard {
       title: 'B-Wing',
       cost: 5,
       attack: 5,
+      traits: {
+        Trait.fighter,
+      },
       // TODO: Add opponent discards a card or you gain 2 attack.
     ),
     GalaxyCard(
@@ -478,6 +605,9 @@ final class GalaxyCard {
       cost: 7,
       attack: 5,
       resources: 2,
+      traits: {
+        Trait.transport,
+      },
       // TODO: Add place unique card into hand from discard pile.
     ),
     GalaxyCard(
@@ -485,6 +615,9 @@ final class GalaxyCard {
       title: 'Chewbacca',
       cost: 4,
       attack: 5,
+      traits: {
+        Trait.scoundrel,
+      },
       // TODO: Add draw a card if another unique card in play.
     ),
     GalaxyCard(
@@ -492,6 +625,9 @@ final class GalaxyCard {
       title: 'Jyn Erso',
       cost: 4,
       attack: 4,
+      traits: {
+        Trait.scoundrel,
+      },
       // TODO: Add show oppoennt's hand, place 1 on top of deck if force w/.
     ),
     GalaxyCard(
@@ -499,6 +635,9 @@ final class GalaxyCard {
       title: 'Baze Malbus',
       cost: 2,
       attack: 2,
+      traits: {
+        Trait.trooper,
+      },
       // TODO: Add +1 attack for every defeated opponent base.
     ),
     GalaxyCard(
@@ -506,6 +645,9 @@ final class GalaxyCard {
       title: 'Chirrut Imwe',
       cost: 3,
       force: 2,
+      traits: {
+        Trait.trooper,
+      },
       // TODO: Add +2 attack if force with you.
     ),
     GalaxyCard(
@@ -513,6 +655,9 @@ final class GalaxyCard {
       title: 'Cassian Andor',
       cost: 5,
       attack: 5,
+      traits: {
+        Trait.trooper,
+      },
       // TODO: Add opponent discards a card if defeat unit in galaxy row.
     ),
     GalaxyCard(
@@ -522,6 +667,9 @@ final class GalaxyCard {
       attack: 2,
       resources: 2,
       force: 2,
+      traits: {
+        Trait.officer,
+      },
       // TODO: Add purchase rebel card for free and place on top of deck.
     ),
     GalaxyCard(
@@ -530,6 +678,9 @@ final class GalaxyCard {
       cost: 8,
       attack: 6,
       force: 2,
+      traits: {
+        Trait.jedi,
+      },
       // TODO: Add defeat capital ship if force w/ you.
     ),
   ]);
@@ -557,6 +708,9 @@ final class GalaxyCard {
   /// Amount of damage required to destroy this card in a faction's play area.
   final int? hitPoints;
 
+  /// Traits of this card.
+  final Set<Trait> traits;
+
   /// Create a new card.
   const GalaxyCard({
     required this.faction,
@@ -566,6 +720,7 @@ final class GalaxyCard {
     this.resources = 0,
     this.force = 0,
     this.hitPoints,
+    this.traits = const {},
   });
 
   /// Whether this card is a starter card.

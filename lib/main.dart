@@ -93,6 +93,8 @@ final class _PlayingAsState extends State<_PlayingAs> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            pinned: true,
+            floating: true,
             backgroundColor: widget.initialDeck.faction.color,
             actions: [
               // Export the deck.
