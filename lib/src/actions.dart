@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cr_file_saver/file_saver.dart';
 import 'package:file_picker/file_picker.dart';
 
 import '/src/models.dart';
@@ -11,6 +12,20 @@ Future<void> export(Deck deck) async {
   final output = const JsonEncoder.withIndent('  ').convert(deck.toJson());
 
   // Pick an output file.
+  if (Platform.isAndroid || Platform.isIOS) {
+    // Get a temporary file path.
+    final tmpDir = Directory.systemTemp.createTempSync();
+    final tmpFile = File('${tmpDir.path}/deck.json');
+    await tmpFile.writeAsString(output);
+    await CRFileSaver.saveFileWithDialog(
+      SaveFileDialogParams(
+        sourceFilePath: tmpFile.path,
+        destinationFileName: 'deck.json',
+      ),
+    );
+    return;
+  }
+
   final name = await FilePicker.platform.saveFile(
     fileName: 'deck.json',
     allowedExtensions: ['json'],

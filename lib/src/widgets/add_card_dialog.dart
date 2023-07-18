@@ -11,10 +11,14 @@ final class AddCardDialog extends StatefulWidget {
   /// Called when the user selects and adds a card.
   final ValueChanged<GalaxyCard> onCardAdded;
 
+  /// Unique cards that cannot be added to the deck.
+  final Set<GalaxyCard> uniqueCards;
+
   /// Create a new add card dialog widget.
   const AddCardDialog({
     required this.faction,
     required this.onCardAdded,
+    required this.uniqueCards,
   });
 
   @override
@@ -22,36 +26,17 @@ final class AddCardDialog extends StatefulWidget {
 }
 
 final class _AddCardDialogState extends State<AddCardDialog> {
-  GalaxyCard? _selectedCard;
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       content: CardPicker(
         faction: widget.faction!,
         onCardSelected: (card) {
-          setState(() {
-            _selectedCard = card;
-          });
+          widget.onCardAdded(card!);
+          Navigator.of(context).pop();
         },
+        uniqueCards: widget.uniqueCards,
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: _selectedCard == null
-              ? null
-              : () {
-                  widget.onCardAdded(_selectedCard!);
-                  Navigator.of(context).pop();
-                },
-          child: const Text('Add'),
-        ),
-      ],
     );
   }
 }

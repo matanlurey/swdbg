@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 
 import '/src/actions.dart';
 import '/src/models.dart';
+import '/src/widgets/changelog_dialog.dart';
 import '/src/widgets/faction_icon.dart';
 
 /// A menu that presents the user with a choice of loading a deck.
 final class DeckPicker extends StatelessWidget {
   /// Create a new faction picker.
-  DeckPicker(this.onSelected);
+  const DeckPicker(this.onSelected);
 
   /// Called when the user selects a deck.
   final void Function(Deck) onSelected;
@@ -47,46 +48,61 @@ final class DeckPicker extends StatelessWidget {
     }
   }
 
-  late final _buttons = [
-    _Button(
-      icon: FactionIcon(
-        faction: Faction.rebel,
-        colorFilter: ColorFilter.mode(
-          Faction.rebel.color,
-          BlendMode.srcIn,
-        ),
-      ),
-      label: 'Rebel Alliance',
-      onPressed: _selectRebels,
-    ),
-    _Button(
-      icon: FactionIcon(
-        faction: Faction.imperial,
-        colorFilter: ColorFilter.mode(
-          Faction.imperial.color,
-          BlendMode.srcIn,
-        ),
-      ),
-      label: 'Galactic Empire',
-      onPressed: _selectEmpire,
-    ),
-    _Button(
-      icon: const Icon(Icons.casino),
-      label: 'Random',
-      onPressed: _selectRandom,
-    ),
-    _Button(
-      icon: const Icon(Icons.file_download),
-      label: 'Import',
-      onPressed: _selectImport,
-    ),
-  ];
+  void _selectAbout(BuildContext context) {
+    // https://github.com/flutter/flutter/issues/87766
+    // Without this, the onTap closes the dialog!
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await showDialog<void>(
+        context: context,
+        builder: (_) => ChangelogDialog(),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final buttons = [
+      _Button(
+        icon: FactionIcon(
+          faction: Faction.rebel,
+          colorFilter: ColorFilter.mode(
+            Faction.rebel.color,
+            BlendMode.srcIn,
+          ),
+        ),
+        label: 'Rebel Alliance',
+        onPressed: _selectRebels,
+      ),
+      _Button(
+        icon: FactionIcon(
+          faction: Faction.imperial,
+          colorFilter: ColorFilter.mode(
+            Faction.imperial.color,
+            BlendMode.srcIn,
+          ),
+        ),
+        label: 'Galactic Empire',
+        onPressed: _selectEmpire,
+      ),
+      _Button(
+        icon: const Icon(Icons.casino),
+        label: 'Random',
+        onPressed: _selectRandom,
+      ),
+      _Button(
+        icon: const Icon(Icons.file_download),
+        label: 'Import',
+        onPressed: _selectImport,
+      ),
+      _Button(
+        icon: const Icon(Icons.info),
+        label: 'About',
+        onPressed: () => _selectAbout(context),
+      )
+    ];
     return ListView.separated(
-      itemCount: _buttons.length,
-      itemBuilder: (_, index) => _buttons[index],
+      itemCount: buttons.length,
+      itemBuilder: (_, index) => buttons[index],
       separatorBuilder: (_, __) => SizedBox(height: 8),
     );
   }

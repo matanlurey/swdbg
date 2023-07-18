@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:swdbg_log_app/src/widgets/preview_card_dialog.dart';
 
 import '/src/models.dart';
+import '/src/utils.dart';
 
 /// A widget that displays a player's deck.
 ///
@@ -16,10 +18,18 @@ final class DeckListView extends StatelessWidget {
   /// Called when the user removes a card from the deck.
   final ValueChanged<GalaxyCard> onCardRemoved;
 
+  /// Called when the user duplicates a card in the deck.
+  final ValueChanged<GalaxyCard> onCardDuplicated;
+
+  /// Sort the deck by this comparator.
+  final Comparator<GalaxyCard> sortBy;
+
   /// Create a new deck list view.
   const DeckListView({
     required this.deck,
+    required this.sortBy,
     required this.onCardRemoved,
+    required this.onCardDuplicated,
   });
 
   @override
@@ -39,38 +49,89 @@ final class DeckListView extends StatelessWidget {
       ));
     }
 
-    // Sort the card items by cost, then title.
-    cardItems.sort((a, b) {
-      if (a.card.cost != b.card.cost) {
-        return b.card.cost.compareTo(a.card.cost);
-      }
-      return a.card.title.compareTo(b.card.title);
-    });
+    // Sort the card items.
+    cardItems.sort((a, b) => sortBy(a.card, b.card));
 
     return SliverList.builder(
       itemCount: cardItems.length,
-      itemBuilder: (context, index) {
+      itemBuilder: (_, index) {
         final item = cardItems[index];
-        return ListTile(
-          leading: CircleAvatar(
-            child: Text(item.card.cost.toString()),
-            radius: 20,
-            backgroundColor: item.card.faction.color,
-            foregroundColor: Colors.black,
-          ),
-          title: Text(item.card.title),
-          subtitle: Text(
-            '${item.count}x ${item.card is CapitalShipCard ? 'Capital Ship' : 'Unit'}',
-          ),
-          trailing: IconButton(
-            icon: const Icon(Icons.remove_circle_outline),
-            onPressed: () {
-              onCardRemoved(item.card);
+        return Dismissible(
+          key: ValueKey(item.card.title),
+          confirmDismiss: (_) async {
+            onCardRemoved(item.card);
+            return item.count == 1;
+          },
+          child: ListTile(
+            onTap: () async {
+              // https://github.com/flutter/flutter/issues/87766
+              // Without this, the onTap closes the dialog!
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                await showDialog<void>(
+                  context: context,
+                  builder: (_) => PreviewCardDialog(item.card),
+                );
+              });
             },
+            leading: CircleAvatar(
+              child: Text(item.card.cost.toString()),
+              radius: 20,
+              backgroundColor: item.card.faction.color,
+              foregroundColor: Colors.black,
+            ),
+            title: Text(item.card.title),
+            subtitle: _CardSubTitle(item.card),
+            trailing: Badge(
+              label: Text(item.count.toString()),
+              child: PopupMenuButton(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem<void>(
+                      child: const Text('Preview'),
+                      onTap: () async {
+                        // https://github.com/flutter/flutter/issues/87766
+                        // Without this, the onTap closes the dialog!
+                        WidgetsBinding.instance.addPostFrameCallback((_) async {
+                          await showDialog<void>(
+                            context: context,
+                            builder: (_) => PreviewCardDialog(item.card),
+                          );
+                        });
+                      },
+                    ),
+                    PopupMenuItem<void>(
+                      child: const Text('Duplicate'),
+                      onTap: () => onCardDuplicated(item.card),
+                    ),
+                    PopupMenuItem<void>(
+                      child: const Text('Remove'),
+                      onTap: () => onCardRemoved(item.card),
+                    ),
+                  ];
+                },
+              ),
+            ),
           ),
         );
       },
     );
+  }
+}
+
+final class _CardSubTitle extends StatelessWidget {
+  final GalaxyCard card;
+
+  const _CardSubTitle(this.card);
+
+  @override
+  Widget build(BuildContext context) {
+    final traits = card is UnitCard
+        ? [
+            'Unit',
+            ...(card as UnitCard).traits.map((t) => t.name.camelToTitleCase())
+          ]
+        : ['Capital Ship'];
+    return Text(traits.join(', '));
   }
 }
 

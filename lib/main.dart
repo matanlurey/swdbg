@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:swdbg_log_app/src/widgets/changelog_dialog.dart';
 
 import '/src/actions.dart';
 import '/src/models.dart';
@@ -8,7 +9,7 @@ import '/src/widgets/deck_picker.dart';
 import '/src/widgets/deck_summary_grid.dart';
 import '/src/widgets/faction_icon.dart';
 
-void main() {
+void main() async {
   runApp(const LogApp());
 }
 
@@ -26,13 +27,14 @@ final class _LogAppState extends State<LogApp> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     Widget body;
     if (_deck == null) {
       body = Scaffold(
         body: Center(
           child: SizedBox(
             width: 300,
-            height: 300,
+            height: 400,
             child: DeckPicker((deck) {
               setState(() {
                 _deck = deck;
@@ -43,13 +45,16 @@ final class _LogAppState extends State<LogApp> {
       );
     } else {
       body = Center(
-        child: _PlayingAs(
-          initialDeck: _deck!,
-          onReset: () {
-            setState(() {
-              _deck = null;
-            });
-          },
+        child: Theme(
+          data: theme.copyWith(splashColor: _deck!.faction.color),
+          child: _PlayingAs(
+            initialDeck: _deck!,
+            onReset: () {
+              setState(() {
+                _deck = null;
+              });
+            },
+          ),
         ),
       );
     }
@@ -77,8 +82,40 @@ final class _PlayingAs extends StatefulWidget {
   State<StatefulWidget> createState() => _PlayingAsState();
 }
 
+enum _SortBy {
+  expensive(_compareExpensive),
+  chapest(_compareCheapest),
+  alphabetical(_compareAlphabetical);
+
+  static int _compareExpensive(GalaxyCard a, GalaxyCard b) {
+    // If price is the same, sort by title.
+    if (a.cost == b.cost) {
+      return a.title.compareTo(b.title);
+    }
+    return b.cost.compareTo(a.cost);
+  }
+
+  static int _compareCheapest(GalaxyCard a, GalaxyCard b) {
+    // If price is the same, sort by title.
+    if (a.cost == b.cost) {
+      return a.title.compareTo(b.title);
+    }
+    return a.cost.compareTo(b.cost);
+  }
+
+  static int _compareAlphabetical(GalaxyCard a, GalaxyCard b) {
+    return a.title.compareTo(b.title);
+  }
+
+  /// The sorter to use for this sort by.
+  final Comparator<GalaxyCard> sorter;
+
+  const _SortBy(this.sorter);
+}
+
 final class _PlayingAsState extends State<_PlayingAs> {
   final deck = <GalaxyCard>[];
+  var sorter = _SortBy.expensive;
 
   @override
   void initState() {
@@ -114,6 +151,20 @@ final class _PlayingAsState extends State<_PlayingAs> {
                     value: 'reset',
                     onTap: widget.onReset,
                   ),
+                  PopupMenuItem(
+                    child: const Text('About'),
+                    value: 'cancel',
+                    onTap: () {
+                      // https://github.com/flutter/flutter/issues/87766
+                      // Without this, the onTap closes the dialog!
+                      WidgetsBinding.instance.addPostFrameCallback((_) async {
+                        await showDialog<void>(
+                          context: context,
+                          builder: (_) => ChangelogDialog(),
+                        );
+                      });
+                    },
+                  ),
                 ];
               }),
             ],
@@ -131,11 +182,55 @@ final class _PlayingAsState extends State<_PlayingAs> {
           DeckSummaryGrid(
             deck: deck,
           ),
+          SliverPadding(
+            padding: const EdgeInsets.all(8),
+            sliver: SliverToBoxAdapter(
+              child: SegmentedButton(
+                style: ButtonStyle(
+                  /// TODO: Deprecate and replace with a proper Flutter-style/theme. Not here.
+                  backgroundColor: MaterialStateProperty.resolveWith(
+                    (states) {
+                      if (states.contains(MaterialState.selected)) {
+                        return widget.initialDeck.faction.color;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                segments: [
+                  ButtonSegment(
+                    label: Text('Expensive'),
+                    value: _SortBy.expensive,
+                  ),
+                  ButtonSegment(
+                    label: Text('Cheapest'),
+                    value: _SortBy.chapest,
+                  ),
+                  ButtonSegment(
+                    label: Text('ABC'),
+                    value: _SortBy.alphabetical,
+                  ),
+                ],
+                selected: {sorter},
+                onSelectionChanged: (s) {
+                  setState(() {
+                    sorter = s.single;
+                  });
+                },
+              ),
+            ),
+          ),
           DeckListView(
             deck: deck,
+            sortBy: sorter.sorter,
             onCardRemoved: (card) {
               setState(() {
                 deck.remove(card);
+              });
+            },
+            onCardDuplicated: (card) {
+              setState(() {
+                deck.add(card);
               });
             },
           ),
@@ -155,6 +250,7 @@ final class _PlayingAsState extends State<_PlayingAs> {
                     deck.add(card);
                   });
                 },
+                uniqueCards: deck.where((c) => c.isUnique).toSet(),
               );
             },
           );

@@ -1,4 +1,5 @@
 // TODO: Remove import of this library.
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 

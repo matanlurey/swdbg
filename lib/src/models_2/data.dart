@@ -30,7 +30,6 @@ final class CardDefinitions {
     _Imperial._tieBomber,
     _Imperial._tieFighter,
     _Imperial._tieInterceptor,
-    Never.hashCode,
   ]);
 
   static final _allRebel = List<GalaxyCard>.unmodifiable([
@@ -543,6 +542,7 @@ extension _Neutral on Never {
     attack: 5,
     traits: {
       Trait.bountyHunter,
+      Trait.droid,
     },
   );
   static final _jabbatheHutt = UnitCard(

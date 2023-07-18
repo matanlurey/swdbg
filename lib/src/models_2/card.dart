@@ -75,7 +75,7 @@ enum Trait {
 /// all cards in the game.
 @immutable
 abstract base class Card {
-  static final _validTitle = RegExp(r"^[a-zA-Z0-9]+([ -\']?[a-zA-Z0-9]+)*$");
+  static final _validTitle = RegExp(r"^[a-zA-Z0-9]+([ \-\']?[a-zA-Z0-9]+)*$");
 
   /// Title of the card.
   ///
@@ -233,6 +233,37 @@ sealed class GalaxyCard extends Card {
     }
   }
 
+  @override
+  @mustBeOverridden
+  bool operator ==(Object other) {
+    if (identical(this, other) || other is! GalaxyCard) {
+      return true;
+    }
+    return title == other.title &&
+        faction == other.faction &&
+        cost == other.cost &&
+        isUnique == other.isUnique &&
+        attack == other.attack &&
+        resources == other.resources &&
+        force == other.force &&
+        const SetEquality<void>().equals(traits, other.traits);
+  }
+
+  @override
+  @mustBeOverridden
+  int get hashCode {
+    return Object.hash(
+      title,
+      faction,
+      cost,
+      isUnique,
+      attack,
+      resources,
+      force,
+      const SetEquality<void>().hash(traits),
+    );
+  }
+
   /// Whether or not the card is a starter card.
   @nonVirtual
   bool get isStarter => cost == 0;
@@ -258,6 +289,17 @@ final class CapitalShipCard extends GalaxyCard with PersistentCard {
   }) {
     _checkHitPoints();
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other) || other is! CapitalShipCard) {
+      return true;
+    }
+    return super == other && hitPoints == other.hitPoints;
+  }
+
+  @override
+  int get hashCode => Object.hash(super.hashCode, hitPoints);
 }
 
 /// A "Unit" in the game "Star Wars: The Deck Building Game".
@@ -275,6 +317,19 @@ final class UnitCard extends GalaxyCard {
     super.force,
     super.traits,
   });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other) || other is! UnitCard) {
+      return true;
+    }
+    return super == other;
+  }
+
+  @override
+  // Clashes with must_be_overridden, but we'll add target: ... soon anyway.
+  // ignore: unnecessary_overrides
+  int get hashCode => super.hashCode;
 
   @override
   bool get isPersistent => false;
@@ -296,4 +351,18 @@ final class BaseCard extends Card with PersistentCard {
   }) {
     _checkHitPoints();
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other) || other is! BaseCard) {
+      return true;
+    }
+    return hitPoints == other.hitPoints &&
+        faction == other.faction &&
+        title == other.title &&
+        isUnique == other.isUnique;
+  }
+
+  @override
+  int get hashCode => Object.hash(hitPoints, faction, title, isUnique);
 }
