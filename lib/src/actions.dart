@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 
-import '/src/models/deck.dart';
+import '/src/models.dart';
 
 /// Export a deck to a file.
 Future<void> export(Deck deck) async {

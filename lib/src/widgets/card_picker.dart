@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '/src/models/game.dart';
+import '/src/models.dart';
 
 /// A menu that presents the user with a choice of cards to add to their deck.
 final class CardPicker extends StatelessWidget {
@@ -21,11 +21,11 @@ final class CardPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cards = GalaxyCard.allCards;
+    var cards = CardDefinitions.instance.allGalaxy;
 
     // If a faction is specified, filter out cards from the opposing faction.
     if (faction != null) {
-      final opposing = faction!.opponent;
+      final opposing = faction!.opposing;
       cards = cards.where((card) => card.faction != opposing).toList();
     }
 

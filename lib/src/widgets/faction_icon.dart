@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '/src/models/game.dart';
+import '/src/models.dart';
 
 /// A widget that displays a faction icon.
 final class FactionIcon extends StatelessWidget {

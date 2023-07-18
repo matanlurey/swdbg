@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/src/models/game.dart';
+import '/src/models.dart';
 import '/src/widgets/card_picker.dart';
 
 /// A dialog that allows the user to add a card to their deck.

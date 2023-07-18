@@ -1,6 +1,4 @@
-import 'package:collection/collection.dart';
-import 'package:meta/meta.dart';
-import 'package:swdbg_log_app/src/models/game.dart';
+part of '../models.dart';
 
 /// A deck of cards.
 @immutable
@@ -31,7 +29,8 @@ final class Deck {
       faction: Faction.values.firstWhere((f) => f.name == faction),
       cards: cards
           .cast<String>()
-          .map((name) => GalaxyCard.allCards.firstWhere((c) => c.title == name))
+          .map((name) => CardDefinitions.instance.allGalaxy
+              .firstWhere((e) => e.title == name))
           .toList(),
     );
   }

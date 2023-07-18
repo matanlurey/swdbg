@@ -1,0 +1,22 @@
+{
+  "$id": "https://swdbg.lurey.dev/faction.schema.json",
+  "$comment": "This ideally would be 2020-12. See https://github.com/microsoft/vscode/issues/155379.",
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "description": "A trait in the Star Wars DBG.",
+  "type": "string",
+  "enum": [
+    "Base",
+    "Capital Ship",
+    "Bounty Hunter",
+    "Droid",
+    "Fighter",
+    "Jedi",
+    "Officer",
+    "Scoundrel",
+    "Transport",
+    "Trooper",
+    "Unit",
+    "Unique",
+    "Vehicle"
+  ]
+}

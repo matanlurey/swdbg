@@ -3,8 +3,7 @@ import 'dart:math' show Random;
 import 'package:flutter/material.dart';
 
 import '/src/actions.dart';
-import '/src/models/deck.dart';
-import '/src/models/game.dart';
+import '/src/models.dart';
 import '/src/widgets/faction_icon.dart';
 
 /// A menu that presents the user with a choice of loading a deck.
@@ -17,13 +16,19 @@ final class DeckPicker extends StatelessWidget {
 
   void _selectRebels() {
     onSelected(
-      Deck(faction: Faction.rebel, cards: GalaxyCard.rebelStarter),
+      Deck(
+        faction: Faction.rebel,
+        cards: CardDefinitions.instance.rebelStarterDeck(),
+      ),
     );
   }
 
   void _selectEmpire() {
     onSelected(
-      Deck(faction: Faction.imperial, cards: GalaxyCard.imperialStarter),
+      Deck(
+        faction: Faction.imperial,
+        cards: CardDefinitions.instance.imperialStarterDeck(),
+      ),
     );
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/src/models/game.dart';
+import '/src/models.dart';
 
 /// A widget that displays a player's deck.
 ///
@@ -60,7 +60,7 @@ final class DeckListView extends StatelessWidget {
           ),
           title: Text(item.card.title),
           subtitle: Text(
-            '${item.count}x ${item.card.hitPoints != null ? 'Capital Ship' : 'Unit'}',
+            '${item.count}x ${item.card is CapitalShipCard ? 'Capital Ship' : 'Unit'}',
           ),
           trailing: IconButton(
             icon: const Icon(Icons.remove_circle_outline),

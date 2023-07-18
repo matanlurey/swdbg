@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '/src/actions.dart';
-import '/src/models/deck.dart';
-import '/src/models/game.dart';
+import '/src/models.dart';
 import '/src/widgets/add_card_dialog.dart';
 import '/src/widgets/deck_list_view.dart';
 import '/src/widgets/deck_picker.dart';

@@ -1,4 +1,4 @@
-import '/src/models/game.dart';
+part of '../models.dart';
 
 /// Contains aggregate information about a deck.
 final class DeckSummary {
@@ -30,7 +30,9 @@ final class DeckSummary {
     var force = 0.0;
     for (final card in deck) {
       attack += card.attack;
-      hitPoints += card.hitPoints ?? 0;
+      if (card is CapitalShipCard) {
+        hitPoints += card.hitPoints;
+      }
       resources += card.resources;
       force += card.force;
     }
