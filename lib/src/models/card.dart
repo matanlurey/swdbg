@@ -22,20 +22,6 @@ enum Faction {
         return null;
     }
   }
-
-  /// The theme color for the faction.
-  ///
-  /// TODO: Deprecate and replace with a proper Flutter-style/theme. Not here.
-  Color get color {
-    switch (this) {
-      case Faction.imperial:
-        return Colors.lightBlue;
-      case Faction.rebel:
-        return Colors.redAccent;
-      default:
-        return Colors.grey;
-    }
-  }
 }
 
 /// Traits that a card may have.

@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '/src/models.dart' hide Card;
-import '/src/utils.dart';
+part of '../widgets.dart';
 
 /// A dialog that allows the user to preview a card.
 final class PreviewCardDialog extends StatelessWidget {

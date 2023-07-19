@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+part of '../widgets.dart';
 
 /// Shows the changelog.
 final class ChangelogDialog extends StatelessWidget {

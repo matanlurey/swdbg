@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '/src/models.dart' hide Card;
+part of '../widgets.dart';
 
 /// Shows aggregate information about a deck.
 ///

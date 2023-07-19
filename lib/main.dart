@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:swdbg_log_app/src/widgets/changelog_dialog.dart';
 
 import '/src/actions.dart';
 import '/src/models.dart';
-import '/src/widgets/add_card_dialog.dart';
-import '/src/widgets/deck_list_view.dart';
-import '/src/widgets/deck_picker.dart';
-import '/src/widgets/deck_summary_grid.dart';
-import '/src/widgets/faction_icon.dart';
+import '/src/themes.dart';
+import '/src/widgets.dart';
 
 void main() async {
   runApp(const LogApp());
@@ -27,7 +23,6 @@ final class _LogAppState extends State<LogApp> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     Widget body;
     if (_deck == null) {
       body = Scaffold(
@@ -46,7 +41,7 @@ final class _LogAppState extends State<LogApp> {
     } else {
       body = Center(
         child: Theme(
-          data: theme.copyWith(splashColor: _deck!.faction.color),
+          data: _deck!.faction.theme,
           child: _PlayingAs(
             initialDeck: _deck!,
             onReset: () {
@@ -131,7 +126,6 @@ final class _PlayingAsState extends State<_PlayingAs> {
           SliverAppBar(
             pinned: true,
             floating: true,
-            backgroundColor: widget.initialDeck.faction.color,
             actions: [
               // Export the deck.
               PopupMenuButton(itemBuilder: (_) {
@@ -186,17 +180,6 @@ final class _PlayingAsState extends State<_PlayingAs> {
             padding: const EdgeInsets.all(8),
             sliver: SliverToBoxAdapter(
               child: SegmentedButton(
-                style: ButtonStyle(
-                  /// TODO: Deprecate and replace with a proper Flutter-style/theme. Not here.
-                  backgroundColor: MaterialStateProperty.resolveWith(
-                    (states) {
-                      if (states.contains(MaterialState.selected)) {
-                        return widget.initialDeck.faction.color;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
                 segments: [
                   ButtonSegment(
                     label: Text('Expensive'),
@@ -237,7 +220,6 @@ final class _PlayingAsState extends State<_PlayingAs> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: widget.initialDeck.faction.color,
         onPressed: () async {
           // Open a dialog to add a card to the deck.
           await showDialog<void>(

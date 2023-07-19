@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:swdbg_log_app/src/widgets/preview_card_dialog.dart';
-
-import '/src/models.dart';
-import '/src/utils.dart';
+part of '../widgets.dart';
 
 /// A widget that displays a player's deck.
 ///
@@ -76,7 +72,7 @@ final class DeckListView extends StatelessWidget {
             leading: CircleAvatar(
               child: Text(item.card.cost.toString()),
               radius: 20,
-              backgroundColor: item.card.faction.color,
+              backgroundColor: item.card.faction.theme.primaryColor,
               foregroundColor: Colors.black,
             ),
             title: Text(item.card.title),

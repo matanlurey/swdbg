@@ -1,11 +1,4 @@
-import 'dart:math' show Random;
-
-import 'package:flutter/material.dart';
-
-import '/src/actions.dart';
-import '/src/models.dart';
-import '/src/widgets/changelog_dialog.dart';
-import '/src/widgets/faction_icon.dart';
+part of '../widgets.dart';
 
 /// A menu that presents the user with a choice of loading a deck.
 final class DeckPicker extends StatelessWidget {
@@ -66,7 +59,7 @@ final class DeckPicker extends StatelessWidget {
         icon: FactionIcon(
           faction: Faction.rebel,
           colorFilter: ColorFilter.mode(
-            Faction.rebel.color,
+            Faction.rebel.theme.primaryColor,
             BlendMode.srcIn,
           ),
         ),
@@ -77,7 +70,7 @@ final class DeckPicker extends StatelessWidget {
         icon: FactionIcon(
           faction: Faction.imperial,
           colorFilter: ColorFilter.mode(
-            Faction.imperial.color,
+            Faction.imperial.theme.primaryColor,
             BlendMode.srcIn,
           ),
         ),

@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '/src/models.dart' hide Card;
+part of '../widgets.dart';
 
 /// A menu that presents the user with a choice of cards to add to their deck.
 final class CardPicker extends StatelessWidget {
@@ -69,7 +67,7 @@ final class _ExperimentalGridSelector extends StatelessWidget {
         return InkWell(
           onTap: () => onCardSelected(card),
           child: Card(
-            color: card.faction.color,
+            color: card.faction.theme.primaryColor,
             child: Center(
               child: Text(
                 card.title,
