@@ -233,6 +233,9 @@ extension _Imperial on Never {
     faction: Faction.imperial,
     title: 'Inquisitor',
     cost: 0,
+    ability: Ability.gainAttack(1)
+        .or(Ability.gainResources(1))
+        .or(Ability.gainForce(1)),
   );
   static final _landingCraft = UnitCard(
     faction: Faction.imperial,
@@ -241,6 +244,7 @@ extension _Imperial on Never {
     traits: {
       Trait.transport,
     },
+    ability: Ability.gainResources(4).or(Ability.repairBase(4)),
   );
   static final _scoutTrooper = UnitCard(
     faction: Faction.imperial,
@@ -445,6 +449,7 @@ extension _Rebel on Never {
     title: 'Rebel Transport',
     cost: 2,
     hitPoints: 2,
+    ability: Ability.gainResources(1).or(Ability.repairBase(2)),
   );
   static final _rebelTrooper = UnitCard(
     faction: Faction.rebel,
@@ -459,6 +464,9 @@ extension _Rebel on Never {
     faction: Faction.rebel,
     title: 'Temple Guardian',
     cost: 0,
+    ability: Ability.gainAttack(1)
+        .or(Ability.gainResources(1))
+        .or(Ability.gainForce(1)),
   );
   static final _uWing = UnitCard(
     faction: Faction.rebel,
@@ -593,12 +601,16 @@ extension _Neutral on Never {
     traits: {
       Trait.officer,
     },
+    ability: Ability.gainAttack(2)
+        .or(Ability.gainResources(2))
+        .or(Ability.gainForce(2)),
   );
   static final _nebulonBFrigate = CapitalShipCard(
     faction: Faction.neutral,
     title: 'Nebulon-B Frigate',
     cost: 5,
     hitPoints: 5,
+    ability: Ability.gainResources(3).or(Ability.repairBase(3)),
   );
   static final _outerRimPilot = UnitCard(
     faction: Faction.neutral,

@@ -25,19 +25,23 @@ final class DeckSummaryGrid extends StatelessWidget {
       children: [
         _DeckSummaryGridItem(
           label: 'Attack',
-          value: 5 * summary.attack / deck.length,
+          value: summary.attack,
+          deckLength: deck.length,
         ),
         _DeckSummaryGridItem(
           label: 'Hit Points',
-          value: 5 * summary.hitPoints / deck.length,
+          value: summary.hitPoints,
+          deckLength: deck.length,
         ),
         _DeckSummaryGridItem(
           label: 'Resources',
-          value: 5 * summary.resources / deck.length,
+          value: summary.resources,
+          deckLength: deck.length,
         ),
         _DeckSummaryGridItem(
           label: 'Force',
-          value: 5 * summary.force / deck.length,
+          value: summary.force,
+          deckLength: deck.length,
         ),
       ],
     );
@@ -48,13 +52,20 @@ final class _DeckSummaryGridItem extends StatelessWidget {
   const _DeckSummaryGridItem({
     required this.label,
     required this.value,
+    required this.deckLength,
+    this.isPriority = false,
+    this.isForceWithYou = false,
   });
 
   final String label;
-  final double value;
+  final AttributeSummary value;
+  final int deckLength;
+  final bool isPriority;
+  final bool isForceWithYou;
 
   @override
   Widget build(BuildContext context) {
+    final value = this.value.baseTotal * 5 / deckLength;
     return Card(
       child: ListTile(
         title: Text(label),

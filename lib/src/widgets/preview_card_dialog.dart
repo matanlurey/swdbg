@@ -12,7 +12,6 @@ final class PreviewCardDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       content: SizedBox(
-        height: 300,
         width: 300,
         child: _CardPreview(card),
       ),
@@ -80,9 +79,53 @@ final class _CardPreview extends StatelessWidget {
                 title: Text('Hit Points'),
                 trailing: Text('${card.hitPoints}'),
               ),
+            if (card.ability != null) _AbilityPreview(card.ability!),
           ],
         )
       ],
+    );
+  }
+}
+
+final class _AbilityPreview extends StatelessWidget {
+  final Ability ability;
+
+  const _AbilityPreview(this.ability);
+
+  static TextSpan _buildDescription(Ability ability) {
+    return switch (ability) {
+      GainAttackAbility(amount: final n) => TextSpan(text: 'Gain $n attack'),
+      GainResourcesAbility(amount: final n) =>
+        TextSpan(text: 'Gain $n resources'),
+      GainForceAbility(amount: final n) => TextSpan(text: 'Gain $n force'),
+      RepairBaseAbility(amount: final n) => TextSpan(text: 'Repair $n damage'),
+      ChooseAbility(abilities: final a) => _buildChoose(a),
+    };
+  }
+
+  static TextSpan _buildChoose(Iterable<Ability> abilities) {
+    return TextSpan(
+      children: [
+        TextSpan(
+          children: [
+            TextSpan(
+              text: 'Choose:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            for (final a in abilities)
+              TextSpan(text: '\n• ', children: [_buildDescription(a)])
+          ],
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text('When Played'),
+      subtitle: Text.rich(_buildDescription(ability)),
+      isThreeLine: true,
     );
   }
 }

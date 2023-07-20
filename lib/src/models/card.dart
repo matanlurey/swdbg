@@ -86,6 +86,12 @@ abstract base class Card {
   @nonVirtual
   final bool isUnique;
 
+  /// A specific ability that the card has.
+  ///
+  /// If `null`, the card has no ability.
+  @nonVirtual
+  final Ability? ability;
+
   /// Creates a new [Card] with the given [title] and [faction].
   ///
   /// If [isUnique] is not specified, it defaults to `false`.
@@ -93,6 +99,7 @@ abstract base class Card {
     required this.title,
     required this.faction,
     this.isUnique = false,
+    this.ability,
   }) {
     if (title.isEmpty) {
       throw ArgumentError.value(
@@ -191,6 +198,7 @@ sealed class GalaxyCard extends Card {
     required super.faction,
     required this.cost,
     super.isUnique,
+    super.ability,
     this.attack = 0,
     this.resources = 0,
     this.force = 0,
@@ -268,6 +276,7 @@ final class CapitalShipCard extends GalaxyCard with PersistentCard {
     required super.title,
     required super.cost,
     required this.hitPoints,
+    super.ability,
     super.isUnique,
     super.attack,
     super.resources,
@@ -297,6 +306,7 @@ final class UnitCard extends GalaxyCard {
     required super.faction,
     required super.title,
     required super.cost,
+    super.ability,
     super.isUnique,
     super.attack,
     super.resources,

@@ -3,16 +3,16 @@ part of '../models.dart';
 /// Contains aggregate information about a deck.
 final class DeckSummary {
   /// Total amount of attack.
-  final double attack;
+  final AttributeSummary attack;
 
   /// Total amount of hit points.
-  final double hitPoints;
+  final AttributeSummary hitPoints;
 
   /// Total amount of resources.
-  final double resources;
+  final AttributeSummary resources;
 
   /// Total amount of force.
-  final double force;
+  final AttributeSummary force;
 
   /// Create a new deck summary.
   const DeckSummary({
@@ -24,23 +24,77 @@ final class DeckSummary {
 
   /// Create a new deck summary from a deck.
   factory DeckSummary.fromDeck(Iterable<GalaxyCard> deck) {
-    var attack = 0.0;
-    var hitPoints = 0.0;
-    var resources = 0.0;
-    var force = 0.0;
+    var attack = AttributeSummary(baseTotal: 0);
+    var hitPoints = AttributeSummary(baseTotal: 0);
+    var resources = AttributeSummary(baseTotal: 0);
+    var force = AttributeSummary(baseTotal: 0);
     for (final card in deck) {
-      attack += card.attack;
+      attack += AttributeSummary(baseTotal: card.attack.toDouble());
       if (card is CapitalShipCard) {
-        hitPoints += card.hitPoints;
+        hitPoints += AttributeSummary(baseTotal: card.hitPoints.toDouble());
       }
-      resources += card.resources;
-      force += card.force;
+      resources += AttributeSummary(baseTotal: card.resources.toDouble());
+      force += AttributeSummary(baseTotal: card.force.toDouble());
+
+      final ability = card.ability;
+      if (ability is ChooseAbility) {
+        for (final a in ability.abilities) {
+          if (a is GainAttackAbility) {
+            attack += AttributeSummary(
+              baseTotal: 0,
+              ifAbilitySelected: a.amount.toDouble(),
+            );
+          } else if (a is GainResourcesAbility) {
+            resources += AttributeSummary(
+              baseTotal: 0,
+              ifAbilitySelected: a.amount.toDouble(),
+            );
+          } else if (a is GainForceAbility) {
+            force += AttributeSummary(
+              baseTotal: 0,
+              ifAbilitySelected: a.amount.toDouble(),
+            );
+          }
+        }
+      }
     }
     return DeckSummary(
       attack: attack,
       hitPoints: hitPoints,
       resources: resources,
       force: force,
+    );
+  }
+}
+
+/// Value of an attribute when summed together.
+final class AttributeSummary {
+  /// The base total of the attribute, assuming no player decisions or state.
+  final double baseTotal;
+
+  /// Additional attribute amount if the "Force Is With You" is active.
+  final double ifForceIsWithYou;
+
+  /// Additional attribute amount if the current player opts into increasing.
+  ///
+  /// For example, if given the choices to "choose: gain 1 attack or gain 1
+  /// resource", and this attribute represents "attack", the additional value
+  /// would be present in this field.
+  final double ifAbilitySelected;
+
+  /// Create an attribute summary representing a possible tri-modal state.
+  const AttributeSummary({
+    required this.baseTotal,
+    this.ifForceIsWithYou = 0,
+    this.ifAbilitySelected = 0,
+  });
+
+  /// Returns this summary added to another.
+  AttributeSummary operator +(AttributeSummary other) {
+    return AttributeSummary(
+      baseTotal: baseTotal + other.baseTotal,
+      ifForceIsWithYou: ifForceIsWithYou + other.ifForceIsWithYou,
+      ifAbilitySelected: ifAbilitySelected + other.ifAbilitySelected,
     );
   }
 }
