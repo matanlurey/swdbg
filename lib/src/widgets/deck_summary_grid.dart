@@ -53,24 +53,31 @@ final class _DeckSummaryGridItem extends StatelessWidget {
     required this.label,
     required this.value,
     required this.deckLength,
-    this.isPriority = false,
-    this.isForceWithYou = false,
   });
 
   final String label;
   final AttributeSummary value;
   final int deckLength;
-  final bool isPriority;
-  final bool isForceWithYou;
 
   @override
   Widget build(BuildContext context) {
-    final value = this.value.baseTotal * 5 / deckLength;
+    var min = value.baseTotal * 5 / deckLength;
+    var max =
+        (value.baseTotal + value.ifAbilitySelected + value.ifForceIsWithYou) *
+            5 /
+            deckLength;
+    if (min.isNaN) {
+      min = 0;
+    }
+    if (max.isNaN) {
+      max = 0;
+    }
     return Card(
       child: ListTile(
-        title: Text(label),
-        subtitle: Text('per turn'),
-        trailing: Text(value.isNaN ? '0.00' : value.toStringAsFixed(2)),
+        title: Text(
+          '${min.toStringAsFixed(1)} to ${max.toStringAsFixed(1)}',
+        ),
+        subtitle: Text(label),
       ),
     );
   }
