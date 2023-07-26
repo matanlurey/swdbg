@@ -1,10 +1,20 @@
 # CHANGELOG
 
-## dev: 2023-06-18.1
+## dev: 2023-07-25.1
 
-- ...
+- Added missing cards, "Rodian Gunslinger", "Bossk", and "Jawa Scavenger".
 
-## dev: 2023-06-17.1
+- Centered the title.
+
+## dev: 2023-07-23.1
+
+- Added missing card, "Snowspeeder"
+
+- Added some (but not all) additional abilities that were missing
+
+- "Per turn" summaries now are a range of values
+
+## dev: 2023-07-17.1
 
 - Added a changelog!
 

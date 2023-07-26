@@ -164,6 +164,7 @@ final class _PlayingAsState extends State<_PlayingAs> {
             ],
             flexibleSpace: FlexibleSpaceBar(
               title: Text('${deck.length} Cards'),
+              centerTitle: true,
               background: Opacity(
                 opacity: 0.3,
                 child: Padding(

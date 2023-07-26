@@ -28,6 +28,27 @@ sealed class Ability {
   ///
   /// Amount must be a positive number.
   factory Ability.repairBase(int amount) = RepairBaseAbility._;
+
+  /// Draw a card, or card(s) into the player's hand.
+  ///
+  /// Amount must be a positive number; defaults to 1.
+  factory Ability.drawCard({
+    int amount,
+  }) = DrawCardAbility._;
+
+  /// Add a card from a location to the player's hand.
+  const factory Ability.addCard({
+    required CardLocation from,
+    CardSelector? selector,
+  }) = AddCardAbility._;
+
+  /// Discard a card, or card(s), from a location.
+  ///
+  /// Amount must be a positive number; defaults to 1.
+  factory Ability.discardCard({
+    required CardLocation from,
+    int amount,
+  }) = DiscardCardAbility._;
 }
 
 /// Choose one of the specified abilities to use.
@@ -93,6 +114,50 @@ final class RepairBaseAbility extends Ability {
   final int amount;
 
   RepairBaseAbility._(this.amount) {
+    _checkAmount(amount);
+  }
+}
+
+/// Draw 1+ card(s) from the specified location into the player's hand.
+final class DrawCardAbility extends Ability {
+  /// The number of cards to draw.
+  final int amount;
+
+  DrawCardAbility._({
+    this.amount = 1,
+  }) {
+    _checkAmount(amount);
+  }
+}
+
+/// Add a card from a location to the player's hand.
+final class AddCardAbility extends Ability {
+  /// Where to add the card from.
+  final CardLocation from;
+
+  /// What card type to add.
+  ///
+  /// If `null`, any card type is allowed.
+  final CardSelector? selector;
+
+  const AddCardAbility._({
+    required this.from,
+    this.selector,
+  });
+}
+
+/// Discard 1+ card(s) from a location.
+final class DiscardCardAbility extends Ability {
+  /// The number of cards to discard.
+  final int amount;
+
+  /// Where to discard the card(s) from.
+  final CardLocation from;
+
+  DiscardCardAbility._({
+    required this.from,
+    this.amount = 1,
+  }) {
     _checkAmount(amount);
   }
 }

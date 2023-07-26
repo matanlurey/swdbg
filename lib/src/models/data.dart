@@ -50,6 +50,7 @@ final class CardDefinitions {
     _Rebel._rebelCommando,
     _Rebel._rebelTransport,
     _Rebel._rebelTrooper,
+    _Rebel._snowspeeder,
     _Rebel._templeGuardian,
     _Rebel._uWing,
     _Rebel._xWing,
@@ -58,6 +59,7 @@ final class CardDefinitions {
 
   static final _allNeutral = List<GalaxyCard>.unmodifiable([
     _Neutral._blockadeRunner,
+    _Neutral._bossk,
     _Neutral._cRocCruiser,
     _Neutral._dengar,
     _Neutral._fangFighter,
@@ -65,11 +67,13 @@ final class CardDefinitions {
     _Neutral._ig88,
     _Neutral._jabbasSailBarge,
     _Neutral._jabbatheHutt,
+    _Neutral._jawaScavenger,
     _Neutral._kelDorMystic,
     _Neutral._landoCalrissian,
     _Neutral._lobot,
     _Neutral._nebulonBFrigate,
     _Neutral._outerRimPilot,
+    _Neutral._rodianGunslinger,
     _Neutral._quarrenMercenary,
     _Neutral._twiLekSmuggler,
     _Neutral._z95Headhunter,
@@ -135,6 +139,10 @@ extension _Imperial on Never {
     traits: {
       Trait.vehicle,
     },
+    ability: Ability.addCard(
+      from: CardLocation.currentPlayersDiscardPile,
+      selector: CardSelector.byTraits({Trait.trooper}),
+    ),
   );
   static final _atSt = UnitCard(
     faction: Faction.imperial,
@@ -144,6 +152,7 @@ extension _Imperial on Never {
     traits: {
       Trait.vehicle,
     },
+    ability: Ability.discardCard(from: CardLocation.galaxyRow),
   );
   static final _admiralPiett = UnitCard(
     faction: Faction.imperial,
@@ -186,6 +195,7 @@ extension _Imperial on Never {
     traits: {
       Trait.officer,
     },
+    ability: Ability.drawCard(),
   );
   static final _generalVeers = UnitCard(
     faction: Faction.imperial,
@@ -288,6 +298,7 @@ extension _Imperial on Never {
     traits: {
       Trait.fighter,
     },
+    ability: Ability.discardCard(from: CardLocation.galaxyRow),
   );
   static final _tieInterceptor = UnitCard(
     faction: Faction.imperial,
@@ -383,6 +394,7 @@ extension _Rebel on Never {
     traits: {
       Trait.scoundrel,
     },
+    ability: Ability.drawCard(),
   );
   static final _jynErso = UnitCard(
     faction: Faction.rebel,
@@ -415,6 +427,10 @@ extension _Rebel on Never {
     traits: {
       Trait.transport,
     },
+    ability: Ability.addCard(
+      from: CardLocation.currentPlayersDiscardPile,
+      selector: CardSelector.unique(),
+    ),
   );
   static final _monCalamariCruiser = CapitalShipCard(
     faction: Faction.rebel,
@@ -443,6 +459,7 @@ extension _Rebel on Never {
     traits: {
       Trait.trooper,
     },
+    ability: Ability.discardCard(from: CardLocation.opponentsHand),
   );
   static final _rebelTransport = CapitalShipCard(
     faction: Faction.rebel,
@@ -459,6 +476,16 @@ extension _Rebel on Never {
     traits: {
       Trait.trooper,
     },
+  );
+  static final _snowspeeder = UnitCard(
+    faction: Faction.rebel,
+    title: 'Snowspeeder',
+    cost: 2,
+    attack: 2,
+    traits: {
+      Trait.vehicle,
+    },
+    ability: Ability.discardCard(from: CardLocation.opponentsHand),
   );
   static final _templeGuardian = UnitCard(
     faction: Faction.rebel,
@@ -506,6 +533,16 @@ extension _Neutral on Never {
     hitPoints: 4,
     attack: 1,
     resources: 1,
+  );
+  static final _bossk = UnitCard(
+    faction: Faction.neutral,
+    title: 'Bossk',
+    isUnique: true,
+    cost: 3,
+    attack: 3,
+    traits: {
+      Trait.bountyHunter,
+    },
   );
   static final _cRocCruiser = CapitalShipCard(
     faction: Faction.neutral,
@@ -575,6 +612,16 @@ extension _Neutral on Never {
     traits: {
       Trait.vehicle,
     },
+    ability: Ability.addCard(
+      from: CardLocation.currentPlayersDiscardPile,
+      selector: CardSelector.byTraits({Trait.bountyHunter}),
+    ),
+  );
+  static final _jawaScavenger = UnitCard(
+    faction: Faction.neutral,
+    title: 'Jawa Scavenger',
+    cost: 1,
+    resources: 2,
   );
   static final _kelDorMystic = UnitCard(
     faction: Faction.neutral,
@@ -592,6 +639,7 @@ extension _Neutral on Never {
     traits: {
       Trait.scoundrel,
     },
+    ability: Ability.drawCard(),
   );
   static final _lobot = UnitCard(
     faction: Faction.neutral,
@@ -625,6 +673,15 @@ extension _Neutral on Never {
     attack: 4,
     traits: {
       Trait.trooper,
+    },
+  );
+  static final _rodianGunslinger = UnitCard(
+    faction: Faction.neutral,
+    title: 'Rodian Gunslinger',
+    cost: 2,
+    attack: 2,
+    traits: {
+      Trait.bountyHunter,
     },
   );
   static final _twiLekSmuggler = UnitCard(
