@@ -95,7 +95,7 @@ final class _AbilityPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text('When Played'),
+      title: Text('Ability'),
       subtitle: Text.rich(ability.toTextSpan()),
       isThreeLine: true,
     );

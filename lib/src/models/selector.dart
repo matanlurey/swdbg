@@ -2,6 +2,9 @@ part of '../models.dart';
 
 /// Where a card could be.
 enum CardLocation {
+  /// The current card.
+  currentCard,
+
   /// The player's deck.
   currentPlayersDeck,
 
@@ -40,6 +43,36 @@ sealed class CardSelector {
 
   /// Create a selector that matches unique cards.
   factory CardSelector.unique() = CardUniqueSelector._;
+
+  /// Create a selector that matches capital ships.
+  factory CardSelector.capitalShips() = CardCapitalShipSelector._;
+
+  /// Create a selector that matches bases.
+  factory CardSelector.bases() = CardBaseSelector._;
+
+  /// Create a selector that matches a faction.
+  factory CardSelector.faction(Faction faction) = FactionSelector._;
+
+  /// Creates a new selector that matches either selector.
+  CardSelector or(CardSelector other) {
+    return CardSelectorOr._({this, other});
+  }
+}
+
+/// A selector that matches either selector.
+final class CardSelectorOr extends CardSelector {
+  /// The selectors to match.
+  final Set<CardSelector> selectors;
+
+  const CardSelectorOr._(this.selectors);
+
+  @override
+  CardSelector or(CardSelector other) {
+    return CardSelectorOr._({
+      ...selectors,
+      other,
+    });
+  }
 }
 
 /// A selector that matches a specific card by title
@@ -61,4 +94,22 @@ final class CardTraitSelector extends CardSelector {
 /// A selector that matches unique cards.
 final class CardUniqueSelector extends CardSelector {
   const CardUniqueSelector._();
+}
+
+/// A selector that mathches bases.
+final class CardBaseSelector extends CardSelector {
+  const CardBaseSelector._();
+}
+
+/// A selector that matches capital ships.
+final class CardCapitalShipSelector extends CardSelector {
+  const CardCapitalShipSelector._();
+}
+
+/// A selector that matches a faction.
+final class FactionSelector extends CardSelector {
+  /// The faction to match.
+  final Faction faction;
+
+  const FactionSelector._(this.faction);
 }

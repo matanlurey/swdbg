@@ -141,6 +141,7 @@ extension _Imperial on Never {
     traits: {
       Trait.vehicle,
     },
+    // Add a trooper from your discard pile to your hand.
     ability: Ability.addCard(
       from: CardLocation.currentPlayersDiscardPile,
       selector: CardSelector.byTraits({Trait.trooper}),
@@ -154,6 +155,7 @@ extension _Imperial on Never {
     traits: {
       Trait.vehicle,
     },
+    // Discard a card from the galaxy row.
     ability: Ability.discardCard(from: CardLocation.galaxyRow),
   );
   static final _admiralPiett = UnitCard(
@@ -165,6 +167,11 @@ extension _Imperial on Never {
     traits: {
       Trait.officer,
     },
+    // Each capital ship in play gains +1 attack.
+    ability: Ability.applyForEach(
+      selector: CardSelector.capitalShips(),
+      ability: Ability.gainAttack(1),
+    ),
   );
   static final _bobaFett = UnitCard(
     faction: Faction.imperial,
@@ -175,6 +182,11 @@ extension _Imperial on Never {
     traits: {
       Trait.bountyHunter,
     },
+    // When you defeat a card in the galaxy row, draw a card.
+    ability: Ability.applyWhen(
+      condition: Condition.defeatGalaxyRow(),
+      ability: Ability.drawCard(),
+    ),
   );
   static final _darthVader = UnitCard(
     faction: Faction.imperial,
@@ -186,6 +198,11 @@ extension _Imperial on Never {
     traits: {
       Trait.jedi,
     },
+    // If the force is with you, gain +4 attack.
+    ability: Ability.applyWhen(
+      condition: Condition.forceIsWithYou(),
+      ability: Ability.gainAttack(4),
+    ),
   );
   static final _deathTrooper = UnitCard(
     faction: Faction.imperial,
@@ -195,6 +212,11 @@ extension _Imperial on Never {
     traits: {
       Trait.trooper,
     },
+    // If the force is with you, gain +2 attack.
+    ability: Ability.applyWhen(
+      condition: Condition.forceIsWithYou(),
+      ability: Ability.gainAttack(2),
+    ),
   );
   static final _directorKrennic = UnitCard(
     faction: Faction.imperial,
@@ -206,7 +228,10 @@ extension _Imperial on Never {
     traits: {
       Trait.officer,
     },
-    ability: Ability.drawCard(),
+    // Draw a card (2 if the Death Star is in play).
+    ability: Ability.drawCard(
+      ifConditionBonus: Condition.inPlay(CardSelector.byTitle('Death Star')),
+    ),
   );
   static final _generalVeers = UnitCard(
     faction: Faction.imperial,
@@ -217,6 +242,18 @@ extension _Imperial on Never {
     traits: {
       Trait.officer,
     },
+    // Draw a card if a trooper or vehicle is in play.
+    ability: Ability.applyWhen(
+      condition: Condition.inPlay(
+        CardSelector.byTraits(
+          {
+            Trait.trooper,
+            Trait.vehicle,
+          },
+        ),
+      ),
+      ability: Ability.drawCard(),
+    ),
   );
   static final _gozantiCruiser = CapitalShipCard(
     faction: Faction.imperial,
@@ -224,6 +261,13 @@ extension _Imperial on Never {
     cost: 3,
     hitPoints: 3,
     resources: 2,
+    // Discard a card from your hand to draw a card.
+    ability: Ability.applyWhen(
+      condition: Condition.ifYou(
+        Ability.discardCard(from: CardLocation.currentPlayersHand),
+      ),
+      ability: Ability.drawCard(),
+    ),
   );
   static final _grandMoffTarkin = UnitCard(
     faction: Faction.imperial,
@@ -236,6 +280,12 @@ extension _Imperial on Never {
     traits: {
       Trait.officer,
     },
+    // Purchase an Imperial card for free from the galaxy row, and add it to
+    // your hand. Exile it at the end of the turn.
+    ability: Ability.purchaseCardForFree(
+      selector: CardSelector.faction(Faction.imperial),
+      to: PurchaseCardLocation.handAndExileAtEndOfTurn,
+    ),
   );
   static final _imperialCarrier = CapitalShipCard(
     faction: Faction.imperial,
@@ -243,6 +293,11 @@ extension _Imperial on Never {
     cost: 5,
     hitPoints: 5,
     resources: 3,
+    // Each fighter in play gains +1 attack.
+    ability: Ability.applyForEach(
+      selector: CardSelector.byTraits({Trait.fighter}),
+      ability: Ability.gainAttack(1),
+    ),
   );
   static final _imperialShuttle = UnitCard(
     faction: Faction.imperial,
@@ -277,6 +332,10 @@ extension _Imperial on Never {
     traits: {
       Trait.officer,
     },
+    // Look at the top card of the galaxy deck.
+    // If the Force is with you, you may swap that card with a card from the
+    // galaxy row.
+    ability: Ability.lookAtTopGalaxyCard(),
   );
   static final _scoutTrooper = UnitCard(
     faction: Faction.imperial,
@@ -286,6 +345,13 @@ extension _Imperial on Never {
     traits: {
       Trait.trooper,
     },
+    // Reveal the top card from the galaxy deck.
+    // If it is an Empire card, gain 1 force.
+    // If it is an enemy card, discard it.
+    ability: Ability.revealTopGalaxyCard(
+      andIfMatches: CardSelector.faction(Faction.imperial),
+      thenApply: Ability.gainForce(1),
+    ),
   );
   static final _starDestroyer = CapitalShipCard(
     faction: Faction.imperial,
@@ -311,6 +377,8 @@ extension _Imperial on Never {
     traits: {
       Trait.fighter,
     },
+    // Discard a card from the galaxy row.
+    ability: Ability.discardCard(from: CardLocation.galaxyRow),
   );
   static final _tieFighter = UnitCard(
     faction: Faction.imperial,
@@ -320,7 +388,11 @@ extension _Imperial on Never {
     traits: {
       Trait.fighter,
     },
-    ability: Ability.discardCard(from: CardLocation.galaxyRow),
+    // If you have a capital ship in play, draw a card.
+    ability: Ability.applyWhen(
+      condition: Condition.inPlay(CardSelector.capitalShips()),
+      ability: Ability.drawCard(),
+    ),
   );
   static final _tieInterceptor = UnitCard(
     faction: Faction.imperial,
@@ -330,6 +402,13 @@ extension _Imperial on Never {
     traits: {
       Trait.fighter,
     },
+    // Reveal the top card of the galaxy deck.
+    // If it is an Empire card, draw 1 card.
+    // If it is an enemy card, discard it.
+    ability: Ability.revealTopGalaxyCard(
+      andIfMatches: CardSelector.faction(Faction.imperial),
+      thenApply: Ability.drawCard(),
+    ),
   );
 }
 
@@ -349,6 +428,15 @@ extension _Rebel on Never {
     traits: {
       Trait.fighter,
     },
+    // If your opponent does not discard a card, gain +2 attack.
+    ability: Ability.applyWhen(
+      condition: Condition.ifOpponentDoesNot(
+        Ability.discardCard(
+          from: CardLocation.opponentsHand,
+        ),
+      ),
+      ability: Ability.gainAttack(2),
+    ),
   );
   static final _bazeMalbus = UnitCard(
     faction: Faction.rebel,
@@ -359,6 +447,8 @@ extension _Rebel on Never {
     traits: {
       Trait.trooper,
     },
+    // For each defeated base, gain +1 attack.
+    ability: Ability.applyForEachDefeatedBase(ability: Ability.gainAttack(1)),
   );
   static final _cassianAndor = UnitCard(
     faction: Faction.rebel,
@@ -369,6 +459,11 @@ extension _Rebel on Never {
     traits: {
       Trait.trooper,
     },
+    // If you defeat a card in the galaxy row, opponent discards a card.
+    ability: Ability.applyWhen(
+      condition: Condition.defeatGalaxyRow(),
+      ability: Ability.discardCard(from: CardLocation.opponentsHand),
+    ),
   );
   static final _chewbacca = UnitCard(
     faction: Faction.rebel,
@@ -379,6 +474,11 @@ extension _Rebel on Never {
     traits: {
       Trait.scoundrel,
     },
+    // If you have another unique card in play, draw a card.
+    ability: Ability.applyWhen(
+      condition: Condition.inPlay(CardSelector.unique()),
+      ability: Ability.drawCard(),
+    ),
   );
   static final _chirrutImwe = UnitCard(
     faction: Faction.rebel,
@@ -389,6 +489,11 @@ extension _Rebel on Never {
     traits: {
       Trait.trooper,
     },
+    // If the force is with you, gain +2 attack.
+    ability: Ability.applyWhen(
+      condition: Condition.forceIsWithYou(),
+      ability: Ability.gainAttack(2),
+    ),
   );
   static final _durosSpy = UnitCard(
     faction: Faction.rebel,
@@ -398,6 +503,15 @@ extension _Rebel on Never {
     traits: {
       Trait.scoundrel,
     },
+    // If your opponent does not discard a card, gain 1 force.
+    ability: Ability.applyWhen(
+      condition: Condition.ifOpponentDoesNot(
+        Ability.discardCard(
+          from: CardLocation.opponentsHand,
+        ),
+      ),
+      ability: Ability.gainForce(1),
+    ),
   );
   static final _hammerheadCorvette = CapitalShipCard(
     faction: Faction.rebel,
@@ -405,6 +519,14 @@ extension _Rebel on Never {
     cost: 4,
     hitPoints: 4,
     resources: 2,
+    // If you exile this card, destroy a capital ship in play or galaxy row.
+    ability: Ability.applyWhen(
+      condition: Condition.ifYouExileCurrentCard(),
+      ability: Ability.destroyCard(
+        selector: CardSelector.capitalShips(),
+        orInGalaxyRow: true,
+      ),
+    ),
   );
   static final _hanSolo = UnitCard(
     faction: Faction.rebel,
@@ -416,7 +538,12 @@ extension _Rebel on Never {
     traits: {
       Trait.scoundrel,
     },
-    ability: Ability.drawCard(),
+    // Draw a card, 2 if Millennium Falcon is in play.
+    ability: Ability.drawCard(
+      ifConditionBonus: Condition.inPlay(
+        CardSelector.byTitle('Millennium Falcon'),
+      ),
+    ),
   );
   static final _jynErso = UnitCard(
     faction: Faction.rebel,
@@ -427,6 +554,11 @@ extension _Rebel on Never {
     traits: {
       Trait.trooper,
     },
+    // Look at your opponent's hand.
+    //
+    // If the Force is with you, place 1 card from their hand on top of their
+    // deck.
+    ability: Ability.lookAtOpponentHand(),
   );
   static final _lukeSkywalker = UnitCard(
     faction: Faction.rebel,
@@ -438,6 +570,14 @@ extension _Rebel on Never {
     traits: {
       Trait.jedi,
     },
+    // If the Force is with you, destroy a capital ship in play.
+    ability: Ability.applyWhen(
+      condition: Condition.forceIsWithYou(),
+      ability: Ability.destroyCard(
+        selector: CardSelector.capitalShips(),
+        orInGalaxyRow: false,
+      ),
+    ),
   );
   static final _millenniumFalcon = UnitCard(
     faction: Faction.rebel,
@@ -449,6 +589,7 @@ extension _Rebel on Never {
     traits: {
       Trait.transport,
     },
+    // Add a unique card from your discard pile to your hand.
     ability: Ability.addCard(
       from: CardLocation.currentPlayersDiscardPile,
       selector: CardSelector.unique(),
@@ -472,6 +613,12 @@ extension _Rebel on Never {
     traits: {
       Trait.officer,
     },
+    // Purchase a card from the galaxy row for free.
+    // If the force is with you, place it on top of your deck instead.
+    ability: Ability.purchaseCardForFree(
+      selector: CardSelector.faction(Faction.rebel),
+      to: PurchaseCardLocation.deckOnTopIfForceIsWithYou,
+    ),
   );
   static final _rebelCommando = UnitCard(
     faction: Faction.rebel,
@@ -481,6 +628,8 @@ extension _Rebel on Never {
     traits: {
       Trait.trooper,
     },
+    // Your opponent must discard a card.
+    // If the force is with you, at random.
     ability: Ability.discardCard(from: CardLocation.opponentsHand),
   );
   static final _rebelTransport = CapitalShipCard(
@@ -525,6 +674,11 @@ extension _Rebel on Never {
     traits: {
       Trait.transport,
     },
+    // If the force is with you, repair 3.
+    ability: Ability.applyWhen(
+      condition: Condition.forceIsWithYou(),
+      ability: Ability.repairBase(3),
+    ),
   );
   static final _xWing = UnitCard(
     faction: Faction.rebel,
@@ -534,6 +688,11 @@ extension _Rebel on Never {
     traits: {
       Trait.fighter,
     },
+    // If the force is with you, draw a card.
+    ability: Ability.applyWhen(
+      condition: Condition.forceIsWithYou(),
+      ability: Ability.drawCard(),
+    ),
   );
   static final _yWing = UnitCard(
     faction: Faction.rebel,
@@ -543,6 +702,14 @@ extension _Rebel on Never {
     traits: {
       Trait.fighter,
     },
+    // Exile to do 2 damage to a base or capital ship.
+    ability: Ability.applyWhen(
+      condition: Condition.ifYouExileCurrentCard(),
+      ability: Ability.dealDamage(
+        amount: 2,
+        selector: CardSelector.capitalShips().or(CardSelector.bases()),
+      ),
+    ),
   );
 }
 
@@ -565,6 +732,11 @@ extension _Neutral on Never {
     traits: {
       Trait.bountyHunter,
     },
+    // If you defeat a card in the galaxy row, gain 1 force.
+    ability: Ability.applyWhen(
+      condition: Condition.defeatGalaxyRow(),
+      ability: Ability.gainForce(1),
+    ),
   );
   static final _cRocCruiser = CapitalShipCard(
     faction: Faction.neutral,
@@ -572,6 +744,15 @@ extension _Neutral on Never {
     cost: 3,
     hitPoints: 3,
     resources: 1,
+    // If you discard a card, repair 3.
+    ability: Ability.applyWhen(
+      condition: Condition.ifYou(
+        Ability.discardCard(
+          from: CardLocation.currentPlayersHand,
+        ),
+      ),
+      ability: Ability.repairBase(3),
+    ),
   );
   static final _dengar = UnitCard(
     faction: Faction.neutral,
@@ -582,6 +763,11 @@ extension _Neutral on Never {
     traits: {
       Trait.bountyHunter,
     },
+    // If you defeat a card in the galaxy row, gain 2 resources.
+    ability: Ability.applyWhen(
+      condition: Condition.defeatGalaxyRow(),
+      ability: Ability.gainResources(2),
+    ),
   );
   static final _fangFighter = UnitCard(
     faction: Faction.neutral,
@@ -591,6 +777,11 @@ extension _Neutral on Never {
     traits: {
       Trait.fighter,
     },
+    // Add to your hand, and if the force is with you, draw a card.
+    ability: Ability.activateIfPurchased(
+      ability: Ability.addCard(from: CardLocation.currentCard),
+      andIfForceIsWithYou: Ability.drawCard(),
+    ),
   );
   static final _hwk290 = UnitCard(
     faction: Faction.neutral,
@@ -600,6 +791,11 @@ extension _Neutral on Never {
     traits: {
       Trait.transport,
     },
+    // Exile to repair 4.
+    ability: Ability.applyWhen(
+      condition: Condition.ifYouExileCurrentCard(),
+      ability: Ability.repairBase(4),
+    ),
   );
   static final _ig88 = UnitCard(
     faction: Faction.neutral,
@@ -611,6 +807,16 @@ extension _Neutral on Never {
       Trait.bountyHunter,
       Trait.droid,
     },
+    // If you defeat a card in the galaxy row, exile a card from your hand or discard pile.
+    ability: Ability.applyWhen(
+      condition: Condition.defeatGalaxyRow(),
+      ability: Ability.exileCard(
+        from: {
+          CardLocation.currentPlayersHand,
+          CardLocation.currentPlayersDiscardPile,
+        },
+      ),
+    ),
   );
   static final _jabbatheHutt = UnitCard(
     faction: Faction.neutral,
@@ -623,6 +829,15 @@ extension _Neutral on Never {
     traits: {
       Trait.scoundrel,
     },
+    // Exile a card from your hand to draw a card, 2 if the force is with you.
+    ability: Ability.applyWhen(
+      condition: Condition.ifYou(
+        Ability.exileCard(from: {CardLocation.currentPlayersHand}),
+      ),
+      ability: Ability.drawCard(
+        ifConditionBonus: Condition.forceIsWithYou(),
+      ),
+    ),
   );
   static final _jabbasSailBarge = UnitCard(
     faction: Faction.neutral,
@@ -644,12 +859,27 @@ extension _Neutral on Never {
     title: 'Jawa Scavenger',
     cost: 1,
     resources: 2,
+    // Exile to purchase a card from the galaxy row discard pile.
+    ability: Ability.applyWhen(
+      condition: Condition.ifYouExileCurrentCard(),
+      ability: Ability.purchaseCardFromGalaxyRowDiscardPile(),
+    ),
   );
   static final _kelDorMystic = UnitCard(
     faction: Faction.neutral,
     title: 'Kel Dor Mystic',
     cost: 2,
     force: 2,
+    // Exile to exile a card from your hand or discard pile.
+    ability: Ability.applyWhen(
+      condition: Condition.ifYouExileCurrentCard(),
+      ability: Ability.exileCard(
+        from: {
+          CardLocation.currentPlayersHand,
+          CardLocation.currentPlayersDiscardPile,
+        },
+      ),
+    ),
   );
   static final _landoCalrissian = UnitCard(
     faction: Faction.neutral,
@@ -661,7 +891,10 @@ extension _Neutral on Never {
     traits: {
       Trait.scoundrel,
     },
-    ability: Ability.drawCard(),
+    ability: Ability.drawCard(
+      ifConditionBonus: Condition.forceIsWithYou(),
+      ifMetApplyAbility: Ability.discardCard(from: CardLocation.opponentsHand),
+    ),
   );
   static final _lobot = UnitCard(
     faction: Faction.neutral,
@@ -687,6 +920,11 @@ extension _Neutral on Never {
     title: 'Outer Rim Pilot',
     cost: 2,
     resources: 2,
+    // Exile to gain 1 force.
+    ability: Ability.applyWhen(
+      condition: Condition.ifYouExileCurrentCard(),
+      ability: Ability.gainForce(1),
+    ),
   );
   static final _quarrenMercenary = UnitCard(
     faction: Faction.neutral,
@@ -696,6 +934,17 @@ extension _Neutral on Never {
     traits: {
       Trait.trooper,
     },
+    // When purchased, exile 1 card from hand/discard, 2 if the force is with you.
+    ability: Ability.activateIfPurchased(
+      ability: Ability.exileCard(from: {
+        CardLocation.currentPlayersHand,
+        CardLocation.currentPlayersDiscardPile,
+      }),
+      andIfForceIsWithYou: Ability.exileCard(from: {
+        CardLocation.currentPlayersHand,
+        CardLocation.currentPlayersDiscardPile,
+      }, amount: 2),
+    ),
   );
   static final _rodianGunslinger = UnitCard(
     faction: Faction.neutral,
@@ -705,6 +954,11 @@ extension _Neutral on Never {
     traits: {
       Trait.bountyHunter,
     },
+    // If you attack a card on the galaxy row, gain +2 attack.
+    ability: Ability.applyWhen(
+      condition: Condition.attackGalaxyRow(),
+      ability: Ability.gainAttack(2),
+    ),
   );
   static final _twiLekSmuggler = UnitCard(
     faction: Faction.neutral,
@@ -714,6 +968,8 @@ extension _Neutral on Never {
     traits: {
       Trait.scoundrel,
     },
+    // Place a purchased card on top of your deck.
+    ability: Ability.placePurchasedCardOnTopOfDeck(),
   );
   static final _z95Headhunter = UnitCard(
     faction: Faction.neutral,
@@ -723,5 +979,10 @@ extension _Neutral on Never {
     traits: {
       Trait.fighter,
     },
+    // If your opponent has a capital ship in play, draw a card.
+    ability: Ability.applyWhen(
+      condition: Condition.opponentInPlay(CardSelector.capitalShips()),
+      ability: Ability.drawCard(),
+    ),
   );
 }

@@ -6,6 +6,8 @@
 
 - Changed the text "to" to "-" in the deck summary.
 
+- Added remaining missing abilities.
+
 ## dev: 2023-07-25.1
 
 - Added missing cards, "Rodian Gunslinger", "Bossk", and "Jawa Scavenger".
