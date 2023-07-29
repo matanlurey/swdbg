@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## dev: 2023-07-29.1
+
+- Added missing cards, "Moff Jerjerrod" and "Deathtrooper".
+
+- Changed the text "to" to "-" in the deck summary.
+
 ## dev: 2023-07-25.1
 
 - Added missing cards, "Rodian Gunslinger", "Bossk", and "Jawa Scavenger".

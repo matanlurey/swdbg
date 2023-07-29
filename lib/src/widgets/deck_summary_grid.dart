@@ -75,7 +75,7 @@ final class _DeckSummaryGridItem extends StatelessWidget {
     return Card(
       child: ListTile(
         title: Text(
-          '${min.toStringAsFixed(1)} to ${max.toStringAsFixed(1)}',
+          '${min.toStringAsFixed(1)} - ${max.toStringAsFixed(1)}',
         ),
         subtitle: Text(label),
       ),

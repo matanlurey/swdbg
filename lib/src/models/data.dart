@@ -16,6 +16,7 @@ final class CardDefinitions {
     _Imperial._admiralPiett,
     _Imperial._bobaFett,
     _Imperial._darthVader,
+    _Imperial._deathTrooper,
     _Imperial._directorKrennic,
     _Imperial._generalVeers,
     _Imperial._gozantiCruiser,
@@ -24,6 +25,7 @@ final class CardDefinitions {
     _Imperial._imperialShuttle,
     _Imperial._inqusitor,
     _Imperial._landingCraft,
+    _Imperial._moffJerjerrod,
     _Imperial._scoutTrooper,
     _Imperial._starDestroyer,
     _Imperial._stormtrooper,
@@ -185,6 +187,15 @@ extension _Imperial on Never {
       Trait.jedi,
     },
   );
+  static final _deathTrooper = UnitCard(
+    faction: Faction.imperial,
+    title: 'Death Trooper',
+    cost: 2,
+    attack: 3,
+    traits: {
+      Trait.trooper,
+    },
+  );
   static final _directorKrennic = UnitCard(
     faction: Faction.imperial,
     title: 'Director Krennic',
@@ -255,6 +266,17 @@ extension _Imperial on Never {
       Trait.transport,
     },
     ability: Ability.gainResources(4).or(Ability.repairBase(4)),
+  );
+  static final _moffJerjerrod = UnitCard(
+    faction: Faction.imperial,
+    title: 'Moff Jerjerrod',
+    isUnique: true,
+    cost: 3,
+    attack: 2,
+    resources: 2,
+    traits: {
+      Trait.officer,
+    },
   );
   static final _scoutTrooper = UnitCard(
     faction: Faction.imperial,
