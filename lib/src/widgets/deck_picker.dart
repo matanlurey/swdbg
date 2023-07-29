@@ -41,6 +41,21 @@ final class DeckPicker extends StatelessWidget {
     }
   }
 
+  static final _catalogKey = GlobalKey();
+
+  void _selectCatalog(BuildContext context) async {
+    // Navigate to the catalog view.
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => CatalogView(
+          key: _catalogKey,
+          catalog: [...CardDefinitions.instance.allGalaxy]
+            ..sort((a, b) => a.cost.compareTo(b.cost)),
+        ),
+      ),
+    );
+  }
+
   void _selectAbout(BuildContext context) {
     // https://github.com/flutter/flutter/issues/87766
     // Without this, the onTap closes the dialog!
@@ -86,6 +101,11 @@ final class DeckPicker extends StatelessWidget {
         icon: const Icon(Icons.file_download),
         label: 'Import',
         onPressed: _selectImport,
+      ),
+      _Button(
+        icon: const Icon(Icons.list),
+        label: 'Catalog',
+        onPressed: () => _selectCatalog(context),
       ),
       _Button(
         icon: const Icon(Icons.info),

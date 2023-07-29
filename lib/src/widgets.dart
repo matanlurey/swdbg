@@ -8,6 +8,7 @@ import '/src/actions.dart';
 import '/src/models.dart' hide Card;
 import '/src/themes.dart';
 import '/src/utils.dart';
+import '/src/views.dart';
 
 part 'widgets/add_card_dialog.dart';
 part 'widgets/card_picker.dart';

@@ -630,7 +630,10 @@ extension _Rebel on Never {
     },
     // Your opponent must discard a card.
     // If the force is with you, at random.
-    ability: Ability.discardCard(from: CardLocation.opponentsHand),
+    ability: Ability.discardCard(
+      from: CardLocation.opponentsHand,
+      ifForceIsWithYouAtRandom: true,
+    ),
   );
   static final _rebelTransport = CapitalShipCard(
     faction: Faction.rebel,

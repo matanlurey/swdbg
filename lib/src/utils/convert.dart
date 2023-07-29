@@ -28,7 +28,6 @@ extension AbilityToSpan on Ability {
       children: [
         _chooseHeader,
         abilities.map((a) => a.toTextSpan()).orJoin(),
-        TextSpan(text: '.'),
       ],
     );
   }
@@ -59,13 +58,12 @@ extension AbilityToSpan on Ability {
                 TextSpan(text: ')'),
               ]),
             if (i != null && a != null)
-              TextSpan(text: '(if ', children: [
+              TextSpan(text: ' (and if ', children: [
                 i.toTextSpan(),
                 TextSpan(text: ', '),
                 a.toTextSpan(),
                 TextSpan(text: ')'),
               ]),
-            TextSpan(text: '.'),
           ],
         ),
       AddCardAbility(
@@ -73,14 +71,18 @@ extension AbilityToSpan on Ability {
         selector: final s,
       ) =>
         TextSpan(
-          text: 'Add ',
+          text: 'Add a ',
           children: [
-            if (s == null) TextSpan(text: 'a card') else s.toTextSpan(),
-            if (f == CardLocation.currentCard) TextSpan(text: 'it'),
+            if (f == CardLocation.currentCard)
+              TextSpan(text: 'it')
+            else if (s == null)
+              TextSpan(text: 'a card')
+            else
+              s.toTextSpan(),
+            TextSpan(text: ' to your hand'),
             if (f != CardLocation.currentPlayersDeck &&
                 f != CardLocation.currentCard)
               TextSpan(text: ' from ', children: [f.toTextSpan()]),
-            if (s != null) TextSpan(text: ' $s'),
           ],
         ),
       DiscardCardAbility(
@@ -94,7 +96,6 @@ extension AbilityToSpan on Ability {
             if (f != CardLocation.currentPlayersHand)
               TextSpan(text: ' from ${f.name.camelToTitleCase()}'),
             if (r) TextSpan(text: ' (at random if the Force is with you)'),
-            TextSpan(text: '.'),
           ],
         ),
       ApplyForEachAbility(
@@ -107,7 +108,7 @@ extension AbilityToSpan on Ability {
             s.toTextSpan(),
             TextSpan(
               text: ' in play: ',
-              children: [a.toTextSpan(), TextSpan(text: '.')],
+              children: [a.toTextSpan()],
             ),
           ],
         ),
@@ -116,12 +117,13 @@ extension AbilityToSpan on Ability {
         ability: final a,
       ) =>
         TextSpan(
-          text: 'When you ',
+          text: c is IfYouExileCurrentCardCondition || c is IfYouCondition
+              ? null
+              : 'When ',
           children: [
             c.toTextSpan(),
             TextSpan(text: ': '),
             a.toTextSpan(),
-            TextSpan(text: '.'),
           ],
         ),
       PurchaseCardAbility(
@@ -134,16 +136,15 @@ extension AbilityToSpan on Ability {
             s.toTextSpan(),
             TextSpan(text: ' for free and add it to ', children: [
               t.toTextSpan(),
-              TextSpan(text: '.'),
             ]),
           ],
         ),
       PurchaseCardFromGalaxyRowDiscardAbility() => const TextSpan(
-          text: 'Purchase a card from the galaxy row discard pile.'),
+          text: 'Purchase a card from the galaxy row discard pile'),
       LookAtTopGalaxyCardAbility() => const TextSpan(
           text: 'Look at the top card of the galaxy deck. '
               'If the Force is with you, you may swap that card with a card '
-              'from the galaxy row.',
+              'from the galaxy row',
         ),
       RevealTopGalaxyCardAbility(
         andIfMatches: final a,
@@ -154,11 +155,11 @@ extension AbilityToSpan on Ability {
           children: [
             TextSpan(text: 'If it is an ', children: [
               a.toTextSpan(),
-              TextSpan(text: ' card,'),
+              TextSpan(text: ', '),
             ]),
             TextSpan(children: [
               b.toTextSpan(),
-              TextSpan(text: '. If it is an enemy card, discard it.'),
+              TextSpan(text: '. If it is an enemy card, discard it'),
             ]),
           ],
         ),
@@ -169,7 +170,6 @@ extension AbilityToSpan on Ability {
           text: 'For each defeated base: ',
           children: [
             a.toTextSpan(),
-            TextSpan(text: '.'),
           ],
         ),
       DestroyCardAbility(
@@ -180,16 +180,15 @@ extension AbilityToSpan on Ability {
           text: 'Destroy a ',
           children: [
             s.toTextSpan(),
-            TextSpan(text: 'in play', children: [
+            TextSpan(text: ' in play', children: [
               if (g) TextSpan(text: ' or in the galaxy row'),
             ]),
-            TextSpan(text: '.'),
           ],
         ),
       LookAtOpponentHandAbility() => const TextSpan(
           text: "Look at your opponent's hand. "
               'If the Force is with you, place 1 card from their hand on '
-              'top of their deck.'),
+              'top of their deck'),
       DealDamageAbility(
         amount: final n,
         selector: final t,
@@ -198,7 +197,6 @@ extension AbilityToSpan on Ability {
           text: 'Deal $n damage to ',
           children: [
             t.toTextSpan(),
-            TextSpan(text: '.'),
           ],
         ),
       ActivateAbilityIfPurchasedAbility(
@@ -214,7 +212,6 @@ extension AbilityToSpan on Ability {
                 f.toTextSpan(),
                 TextSpan(text: ' if the Force is with you)')
               ]),
-            TextSpan(text: '.'),
           ],
         ),
       ExileCardAbility(
@@ -231,11 +228,10 @@ extension AbilityToSpan on Ability {
             TextSpan(
                 text: ' from ',
                 children: [f.map((l) => l.toTextSpan()).orJoin()]),
-            TextSpan(text: '.'),
           ],
         ),
       PlacePurchasedCardOnTopOfDeckAbility() =>
-        const TextSpan(text: 'Place a card you purchase on top of your deck.'),
+        const TextSpan(text: 'Place a card you purchase on top of your deck'),
     };
   }
 }
@@ -294,7 +290,8 @@ extension CardSelectorToSpan on CardSelector {
   TextSpan toTextSpan() {
     return switch (this) {
       CardTitleSelector(title: final t) => TextSpan(text: t),
-      CardTraitSelector(traits: final t) => TextSpan(text: t.join(' or ')),
+      CardTraitSelector(traits: final t) =>
+        TextSpan(text: t.map((x) => x.name.toTitleCase()).join(' or ')),
       CardUniqueSelector() => const TextSpan(text: 'unique card'),
       CardBaseSelector() => const TextSpan(text: 'base'),
       CardCapitalShipSelector() => const TextSpan(text: 'capital ship'),
@@ -320,7 +317,8 @@ extension ConditionToSpan on Condition {
         const TextSpan(text: 'attack a unit in the galaxy row'),
       ForceIsWithYouCondition() =>
         const TextSpan(text: 'the Force is with you'),
-      InPlayCondition(selector: final s) => TextSpan(text: 'a ', children: [
+      InPlayCondition(selector: final s) =>
+        TextSpan(text: 'you have a ', children: [
           s.toTextSpan(),
           TextSpan(text: ' in play'),
         ]),
@@ -329,7 +327,7 @@ extension ConditionToSpan on Condition {
           s.toTextSpan(),
           TextSpan(text: ' is in play'),
         ]),
-      IfYouCondition(ability: final a) => TextSpan(text: 'you ', children: [
+      IfYouCondition(ability: final a) => TextSpan(children: [
           a.toTextSpan(),
         ]),
       IfOpponentDoesNotCondition(ability: final a) =>
@@ -337,7 +335,7 @@ extension ConditionToSpan on Condition {
           a.toTextSpan(),
         ]),
       IfYouExileCurrentCardCondition() =>
-        const TextSpan(text: 'you exile this card'),
+        const TextSpan(text: 'Exile this card'),
     };
   }
 }
