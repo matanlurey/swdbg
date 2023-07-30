@@ -129,7 +129,7 @@ final class _DeckViewState extends State<DeckView> {
                   });
                 },
               ),
-              DeckSummaryGrid(
+              DeckInsights(
                 deck: deck,
               ),
               _DeckViewCardList(
@@ -155,6 +155,10 @@ final class _DeckViewState extends State<DeckView> {
                     }
                   });
                 },
+              ),
+              // Add some padding so the FAB doesn't cover the last card.
+              const SliverPadding(
+                padding: EdgeInsets.only(bottom: 80),
               ),
             ],
           ),
@@ -283,6 +287,8 @@ final class _DeckViewCardList extends StatelessWidget {
   Widget build(BuildContext context) {
     return CatalogSliverList(
       cards: cards,
+      // TODO: Implement.
+      // header: const Text('Header'),
       onCardDismissed: onCardRemoved,
       onCardSelected: (card) async {
         final action = await PreviewCardSheet.showAndCheckAdd(

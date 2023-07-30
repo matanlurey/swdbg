@@ -7,9 +7,9 @@ part of '../widgets.dart';
 /// - Average defense per turn.
 /// - Average resources per turn.
 /// - Average force per turn.
-final class DeckSummaryGrid extends StatelessWidget {
+final class DeckInsights extends StatelessWidget {
   /// Create a new deck summary grid.
-  const DeckSummaryGrid({
+  const DeckInsights({
     required this.deck,
   });
 
