@@ -1,6 +1,6 @@
 {
-    "name": "SWDBG Logging Application",
-    "short_name": "SWDBG Log App",
+    "name": "SWDBG Companion",
+    "short_name": "SWDBG",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

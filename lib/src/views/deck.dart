@@ -98,11 +98,14 @@ final class _DeckViewState extends State<DeckView> {
               // Navigate to the add card screen.
               final card = await Navigator.of(context).push<GalaxyCard>(
                 MaterialPageRoute(
-                  builder: (_) => CatalogView.selectCard(
-                    catalog: CardDefinitions.instance.allGalaxy,
-                    initiallyExcludeFaction:
-                        widget.initialDeck.faction.opposing,
-                    initiallyHideStarterCards: true,
+                  builder: (_) => Theme(
+                    data: widget.initialDeck.faction.theme,
+                    child: CatalogView.selectCard(
+                      catalog: CardDefinitions.instance.allGalaxy,
+                      initiallyExcludeFaction:
+                          widget.initialDeck.faction.opposing,
+                      initiallyHideStarterCards: true,
+                    ),
                   ),
                 ),
               );
@@ -131,18 +134,25 @@ final class _DeckViewState extends State<DeckView> {
               ),
               _DeckViewCardList(
                 cards: () {
-                  final cards = deck.toList()..sort(sorter.comparator);
-                  print(cards.map((c) => c.title));
-                  return cards;
+                  return deck.toList()..sort(sorter.comparator);
                 }(),
                 onCardAdded: (card) {
                   setState(() {
                     deck.add(card);
                   });
                 },
-                onCardRemoved: (card) {
+                onCardRemoved: (card, index) {
                   setState(() {
-                    deck.remove(card);
+                    // If index is set, remove the Nth appearance of the card.
+                    for (var i = 0; i < deck.length; i++) {
+                      if (deck[i].title == card.title) {
+                        if (index == 0) {
+                          deck.removeAt(i);
+                          break;
+                        }
+                        index--;
+                      }
+                    }
                   });
                 },
               ),
@@ -261,7 +271,7 @@ final class _DeckViewCardList extends StatelessWidget {
   final void Function(GalaxyCard) onCardAdded;
 
   /// When a card is removed.
-  final void Function(GalaxyCard) onCardRemoved;
+  final void Function(GalaxyCard, int) onCardRemoved;
 
   const _DeckViewCardList({
     required this.cards,
@@ -273,6 +283,7 @@ final class _DeckViewCardList extends StatelessWidget {
   Widget build(BuildContext context) {
     return CatalogSliverList(
       cards: cards,
+      onCardDismissed: onCardRemoved,
       onCardSelected: (card) async {
         final action = await PreviewCardSheet.showAndCheckAdd(
           context,
@@ -285,7 +296,7 @@ final class _DeckViewCardList extends StatelessWidget {
         if (action == PreviewCardAction.duplicate) {
           onCardAdded(card);
         } else if (action == PreviewCardAction.exile) {
-          onCardRemoved(card);
+          onCardRemoved(card, 0);
         }
       },
     );

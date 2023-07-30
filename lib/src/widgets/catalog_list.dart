@@ -10,10 +10,16 @@ class CatalogSliverList extends StatelessWidget {
   /// If `null`, cards will not be selectable.
   final void Function(GalaxyCard)? onCardSelected;
 
+  /// Callback when a card was dismissed.
+  ///
+  /// If `null`, cards will not be dismissable.
+  final void Function(GalaxyCard, int)? onCardDismissed;
+
   /// Create a new catalog sliver list.
   const CatalogSliverList({
     required this.cards,
     this.onCardSelected,
+    this.onCardDismissed,
     super.key,
   });
 
@@ -36,13 +42,26 @@ class CatalogSliverList extends StatelessWidget {
       itemBuilder: (context, index) {
         final card = cards[index];
         if (card.$2 == 1) {
-          return _GalaxyCard(
-            card.$1,
-            onCardSelected: onCardSelected == null
+          return Dismissible(
+            key: ValueKey(card.$1.title),
+            direction: onCardDismissed == null
+                ? DismissDirection.none
+                : DismissDirection.horizontal,
+            background: const _DismissBackground.leftToRight(),
+            secondaryBackground: const _DismissBackground.rightToLeft(),
+            onDismissed: onCardDismissed == null
                 ? null
-                : () {
-                    onCardSelected!(card.$1);
+                : (direction) {
+                    onCardDismissed!(card.$1, 0);
                   },
+            child: _GalaxyCard(
+              card.$1,
+              onCardSelected: onCardSelected == null
+                  ? null
+                  : () {
+                      onCardSelected!(card.$1);
+                    },
+            ),
           );
         } else {
           return _GalaxyCardSet(
@@ -52,6 +71,11 @@ class CatalogSliverList extends StatelessWidget {
                 ? null
                 : () {
                     onCardSelected!(card.$1);
+                  },
+            onCardDismissed: onCardDismissed == null
+                ? null
+                : (card, index) {
+                    onCardDismissed!(card, index);
                   },
           );
         }
@@ -70,10 +94,14 @@ final class _GalaxyCardSet extends StatelessWidget {
   /// Callback when the user taps the card.
   final void Function()? onCardSelected;
 
+  /// Callback when a card was dismissed.
+  final void Function(GalaxyCard, int)? onCardDismissed;
+
   const _GalaxyCardSet(
     this.card,
     this.count, {
     this.onCardSelected,
+    this.onCardDismissed,
   });
 
   @override
@@ -81,11 +109,10 @@ final class _GalaxyCardSet extends StatelessWidget {
     return ExpansionTile(
       title: Text(card.title),
       subtitle: _CardSubTitle(card),
-      leading: CircleAvatar(
-        child: Text(card.cost.toString()),
-        radius: 20,
-        backgroundColor: card.faction.theme.primaryColor,
-        foregroundColor: Colors.black,
+      leading: _AdaptiveAvatar(
+        cost: card.cost,
+        faction: card.faction,
+        isCapitalShip: card is CapitalShipCard,
       ),
       trailing: Padding(
         padding: const EdgeInsets.only(right: 2),
@@ -93,15 +120,59 @@ final class _GalaxyCardSet extends StatelessWidget {
       ),
       children: [
         for (var i = 0; i < count; i++)
-          _GalaxyCard(
-            card,
-            onCardSelected: onCardSelected == null
+          Dismissible(
+            // This is sort of a hack, but it works.
+            key: UniqueKey(),
+            direction: onCardDismissed == null
+                ? DismissDirection.none
+                : DismissDirection.horizontal,
+            background: const _DismissBackground.leftToRight(),
+            secondaryBackground: const _DismissBackground.rightToLeft(),
+            onDismissed: onCardDismissed == null
                 ? null
-                : () {
-                    onCardSelected!();
+                : (direction) {
+                    onCardDismissed!(card, i);
                   },
+            child: _GalaxyCard(
+              card,
+              onCardSelected: onCardSelected == null
+                  ? null
+                  : () {
+                      onCardSelected!();
+                    },
+            ),
           ),
       ],
+    );
+  }
+}
+
+final class _DismissBackground extends StatelessWidget {
+  final MainAxisAlignment _mainAxisAlignment;
+
+  const _DismissBackground.leftToRight()
+      : _mainAxisAlignment = MainAxisAlignment.start;
+
+  const _DismissBackground.rightToLeft()
+      : _mainAxisAlignment = MainAxisAlignment.end;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      color: theme.primaryColor,
+      child: Row(
+        mainAxisAlignment: _mainAxisAlignment,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: const Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -126,13 +197,15 @@ final class _GalaxyCard extends StatelessWidget {
           : () {
               onCardSelected!();
             },
-      leading: CircleAvatar(
-        child: Text(card.cost.toString()),
-        radius: 20,
-        backgroundColor: card.faction.theme.primaryColor,
-        foregroundColor: Colors.black,
+      leading: _AdaptiveAvatar(
+        cost: card.cost,
+        faction: card.faction,
+        isCapitalShip: card is CapitalShipCard,
       ),
-      title: Text(card.title),
+      title: Text.rich(TextSpan(text: card.title, children: [
+        // If card is unique, show a unique symbol.
+        if (card.isUnique) TextSpan(text: ' ✦'),
+      ])),
       subtitle: _CardSubTitle(card),
       trailing: onCardSelected == null ? null : Icon(Icons.chevron_right),
     );
@@ -154,5 +227,67 @@ final class _CardSubTitle extends StatelessWidget {
           ]
         : ['Capital Ship'];
     return Text(traits.join(', '), style: theme.textTheme.bodySmall);
+  }
+}
+
+final class _AdaptiveAvatar extends StatelessWidget {
+  /// The cost of the card.
+  final int cost;
+
+  /// Whether the card is a capital ship.
+  final bool isCapitalShip;
+
+  /// Faction the card belongs to.
+  final Faction faction;
+
+  const _AdaptiveAvatar({
+    required this.cost,
+    required this.isCapitalShip,
+    required this.faction,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (isCapitalShip) {
+      final theme = Theme.of(context);
+      return _RectangleAvatar(
+        child: Text(cost.toString(), style: theme.textTheme.bodyMedium),
+        backgroundColor: faction.theme.primaryColor.withOpacity(0.85),
+        foregroundColor: Colors.black,
+      );
+    } else {
+      return CircleAvatar(
+        child: Text(cost.toString()),
+        radius: 20,
+        backgroundColor: faction.theme.primaryColor.withOpacity(0.85),
+        foregroundColor: Colors.black,
+      );
+    }
+  }
+}
+
+final class _RectangleAvatar extends StatelessWidget {
+  final Widget child;
+  final Color backgroundColor;
+  final Color foregroundColor;
+
+  const _RectangleAvatar({
+    required this.child,
+    required this.backgroundColor,
+    required this.foregroundColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2),
+      child: Container(
+        child: child,
+        decoration: BoxDecoration(
+          color: backgroundColor,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      ),
+    );
   }
 }
