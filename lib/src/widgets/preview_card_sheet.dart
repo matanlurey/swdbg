@@ -9,7 +9,19 @@ enum PreviewCardAction {
   exile,
 
   /// Duplicate the card in the deck.
-  duplicate,
+  duplicate;
+
+  /// Icon to display for the action.
+  IconData get icon {
+    switch (this) {
+      case PreviewCardAction.add:
+        return Icons.add;
+      case PreviewCardAction.exile:
+        return Icons.delete;
+      case PreviewCardAction.duplicate:
+        return Icons.copy;
+    }
+  }
 }
 
 /// Show a preview of the given card.
@@ -52,9 +64,10 @@ final class PreviewCardSheet extends StatelessWidget {
           ButtonBar(
             children: [
               for (final action in actions)
-                TextButton(
+                TextButton.icon(
                   onPressed: () => Navigator.of(context).pop(action),
-                  child: Text(action.name.camelToTitleCase()),
+                  label: Text(action.name.camelToTitleCase()),
+                  icon: Icon(action.icon),
                 ),
             ],
           ),

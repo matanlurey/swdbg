@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## dev: 2023-07.30.2
+
+- Added undo option for add/remove.
+
+- Added icons for the deck list actions.
+
+- Do not confirm backing out of the deck view when the deck has not changed.
+
 ## dev: 2023-07-30.1
 
 - Major overhaul!

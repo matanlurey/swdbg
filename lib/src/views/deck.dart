@@ -52,10 +52,14 @@ final class DeckView extends StatefulWidget {
   /// The initial sorting method.
   final DeckSort initialSort;
 
+  /// Whether to show the new insights panel.
+  final bool showNewInsights;
+
   /// Create a new deck view.
   const DeckView({
     required this.initialDeck,
     this.initialSort = DeckSort.mostExpensive,
+    this.showNewInsights = false,
     super.key,
   });
 
@@ -74,12 +78,31 @@ final class _DeckViewState extends State<DeckView> {
     sorter = widget.initialSort;
   }
 
+  void _promptUndoAdd(GalaxyCard card) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Added ${card.title} to Deck.',
+        ),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            setState(deck.removeLast);
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // If the deck has only starter cards, don't prompt the user.
-        if (deck.every((c) => c.isStarter)) {
+        // If the deck is the same as the initial deck, don't prompt the user.
+        if (const UnorderedIterableEquality<void>().equals(
+          deck,
+          widget.initialDeck.cards,
+        )) {
           return true;
         }
 
@@ -112,6 +135,7 @@ final class _DeckViewState extends State<DeckView> {
               if (card != null) {
                 setState(() {
                   deck.add(card);
+                  _promptUndoAdd(card);
                 });
               }
             },
@@ -129,9 +153,16 @@ final class _DeckViewState extends State<DeckView> {
                   });
                 },
               ),
-              DeckInsights(
-                deck: deck,
-              ),
+              if (!widget.showNewInsights)
+                DeckInsights(
+                  deck: deck,
+                )
+              else
+                SliverToBoxAdapter(
+                  child: Card(
+                    child: Center(child: Text('TODO')),
+                  ),
+                ),
               _DeckViewCardList(
                 cards: () {
                   return deck.toList()..sort(sorter.comparator);
@@ -139,15 +170,35 @@ final class _DeckViewState extends State<DeckView> {
                 onCardAdded: (card) {
                   setState(() {
                     deck.add(card);
+                    _promptUndoAdd(card);
                   });
                 },
                 onCardRemoved: (card, index) {
+                  void promptUndo(GalaxyCard card, int atIndex) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Removed ${card.title} from Deck.',
+                        ),
+                        action: SnackBarAction(
+                          label: 'Undo',
+                          onPressed: () {
+                            setState(() {
+                              deck.insert(atIndex, card);
+                            });
+                          },
+                        ),
+                      ),
+                    );
+                  }
+
                   setState(() {
                     // If index is set, remove the Nth appearance of the card.
                     for (var i = 0; i < deck.length; i++) {
                       if (deck[i].title == card.title) {
                         if (index == 0) {
                           deck.removeAt(i);
+                          promptUndo(card, i);
                           break;
                         }
                         index--;

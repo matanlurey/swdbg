@@ -2,8 +2,14 @@ part of '../views.dart';
 
 /// Home view that allows starting a new game and a few other options.
 final class HomeView extends StatelessWidget {
+  /// Shared preferences.
+  final SharedPreferences preferences;
+
   /// Create a new home view.
-  const HomeView({super.key});
+  const HomeView({
+    required this.preferences,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +24,11 @@ final class HomeView extends StatelessWidget {
         ),
         label: 'Rebel Alliance',
         onPressed: () async {
+          final newInsights = await enableExperimentalInsights.get(preferences);
           await Navigator.of(context).push(
             MaterialPageRoute<void>(
               builder: (_) => DeckView(
+                showNewInsights: newInsights,
                 initialDeck: Deck(
                   faction: Faction.rebel,
                   cards: CardDefinitions.instance.rebelStarterDeck(),
@@ -40,9 +48,11 @@ final class HomeView extends StatelessWidget {
         ),
         label: 'Galactic Empire',
         onPressed: () async {
+          final newInsights = await enableExperimentalInsights.get(preferences);
           await Navigator.of(context).push(
             MaterialPageRoute<void>(
               builder: (_) => DeckView(
+                showNewInsights: newInsights,
                 initialDeck: Deck(
                   faction: Faction.imperial,
                   cards: CardDefinitions.instance.imperialStarterDeck(),
@@ -77,10 +87,12 @@ final class HomeView extends StatelessWidget {
         label: 'Import',
         onPressed: () async {
           final deck = await import();
+          final newInsights = await enableExperimentalInsights.get(preferences);
           if (deck != null) {
             await Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (_) => DeckView(
+                  showNewInsights: newInsights,
                   initialDeck: deck,
                 ),
               ),
@@ -98,6 +110,19 @@ final class HomeView extends StatelessWidget {
                 catalog: [
                   ...CardDefinitions.instance.allGalaxy,
                 ],
+              ),
+            ),
+          );
+        },
+      ),
+      _Button(
+        icon: const Icon(Icons.settings),
+        label: 'Settings',
+        onPressed: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => SettingsView(
+                preferences: preferences,
               ),
             ),
           );

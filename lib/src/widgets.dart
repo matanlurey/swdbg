@@ -7,5 +7,6 @@ import '/src/utils.dart';
 
 part 'widgets/catalog_list.dart';
 part 'widgets/deck_insights.dart';
+part 'widgets/deck_insights_2.dart';
 part 'widgets/faction_icon.dart';
 part 'widgets/preview_card_sheet.dart';
