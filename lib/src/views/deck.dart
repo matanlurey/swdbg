@@ -287,8 +287,6 @@ final class _DeckViewCardList extends StatelessWidget {
   Widget build(BuildContext context) {
     return CatalogSliverList(
       cards: cards,
-      // TODO: Implement.
-      // header: const Text('Header'),
       onCardDismissed: onCardRemoved,
       onCardSelected: (card) async {
         final action = await PreviewCardSheet.showAndCheckAdd(

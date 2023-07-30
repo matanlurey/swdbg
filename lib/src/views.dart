@@ -2,7 +2,6 @@ import 'dart:math' show Random;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:sticky_headers/sticky_headers.dart';
 
 import '/src/actions.dart';
 import '/src/models.dart' hide Card;

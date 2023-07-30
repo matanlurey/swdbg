@@ -5,9 +5,6 @@ class CatalogSliverList extends StatelessWidget {
   /// The cards to display.
   final List<GalaxyCard> cards;
 
-  /// Optional header to display above the cards.
-  final Widget? header;
-
   /// Callback when the user taps a card.
   ///
   /// If `null`, cards will not be selectable.
@@ -21,7 +18,6 @@ class CatalogSliverList extends StatelessWidget {
   /// Create a new catalog sliver list.
   const CatalogSliverList({
     required this.cards,
-    this.header,
     this.onCardSelected,
     this.onCardDismissed,
     super.key,
@@ -84,11 +80,7 @@ class CatalogSliverList extends StatelessWidget {
                   },
           );
         }
-        if (index != 0 || header == null) {
-          return content;
-        } else {
-          return StickyHeader(header: header!, content: content);
-        }
+        return content;
       },
     );
   }
