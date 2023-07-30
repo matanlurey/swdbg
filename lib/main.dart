@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '/src/actions.dart';
 import '/src/models.dart';
 import '/src/themes.dart';
+import '/src/views.dart';
 import '/src/widgets.dart';
 
 void main() async {
@@ -29,7 +30,7 @@ final class _LogAppState extends State<LogApp> {
         body: Center(
           child: SizedBox(
             width: 300,
-            height: 400,
+            height: 500,
             child: DeckPicker((deck) {
               setState(() {
                 _deck = deck;
@@ -222,21 +223,21 @@ final class _PlayingAsState extends State<_PlayingAs> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // Open a dialog to add a card to the deck.
-          await showDialog<void>(
-            context: context,
-            builder: (_) {
-              return AddCardDialog(
-                faction: widget.initialDeck.faction,
-                onCardAdded: (card) {
-                  setState(() {
-                    deck.add(card);
-                  });
-                },
-                uniqueCards: deck.where((c) => c.isUnique).toSet(),
-              );
-            },
+          // Navigate to the add card screen.
+          final card = await Navigator.of(context).push<GalaxyCard>(
+            MaterialPageRoute(
+              builder: (_) => CatalogView.selectCard(
+                catalog: CardDefinitions.instance.allGalaxy,
+                initiallyExcludeFaction: widget.initialDeck.faction.opposing,
+                initiallyHideStarterCards: true,
+              ),
+            ),
           );
+          if (card != null) {
+            setState(() {
+              deck.add(card);
+            });
+          }
         },
         child: const Icon(Icons.add),
       ),

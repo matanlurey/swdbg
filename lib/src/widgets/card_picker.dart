@@ -39,6 +39,29 @@ final class CardPicker extends StatelessWidget {
     // Finally, sort the cards by name.
     final cards = filter.toList()..sort((a, b) => a.title.compareTo(b.title));
 
+/*
+
+          SegmentedButton(
+            segments: [
+              ButtonSegment(
+                label: Text('0 - 2'),
+                value: (0, 2),
+              ),
+              ButtonSegment(
+                label: Text('3 - 5'),
+                value: (3, 5),
+              ),
+              ButtonSegment(
+                label: Text('6+'),
+                value: (6, 8),
+              ),
+            ],
+            selected: {(0, 2)},
+            onSelectionChanged: (s) {
+              // TODO: Implement.
+            },
+          ),
+          */
     return SizedBox(
       width: 300,
       child: _ExperimentalGridSelector(

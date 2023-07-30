@@ -11,6 +11,7 @@ import '/src/utils.dart';
 import '/src/views.dart';
 
 part 'widgets/add_card_dialog.dart';
+part 'widgets/card_list_view.dart';
 part 'widgets/card_picker.dart';
 part 'widgets/changelog_dialog.dart';
 part 'widgets/deck_list_view.dart';

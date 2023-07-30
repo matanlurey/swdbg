@@ -49,6 +49,24 @@ final class DeckSummaryGrid extends StatelessWidget {
 }
 
 final class _DeckSummaryGridItem extends StatelessWidget {
+  static final _iconsByName = <String, SvgPicture>{
+    'attack': SvgPicture.asset(
+      'assets/attack.svg',
+      width: 32,
+      height: 32,
+    ),
+    'resources': SvgPicture.asset(
+      'assets/resources.svg',
+      width: 32,
+      height: 32,
+    ),
+    'force': SvgPicture.asset(
+      'assets/force.svg',
+      width: 32,
+      height: 32,
+    ),
+  };
+
   const _DeckSummaryGridItem({
     required this.label,
     required this.value,
@@ -63,7 +81,7 @@ final class _DeckSummaryGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var min = value.baseTotal * 5 / deckLength;
     var max =
-        (value.baseTotal + value.ifAbilitySelected + value.ifForceIsWithYou) *
+        (value.baseTotal + value.ifAbilitySelected + value.ifConditionIsMet) *
             5 /
             deckLength;
     if (min.isNaN) {
@@ -74,6 +92,7 @@ final class _DeckSummaryGridItem extends StatelessWidget {
     }
     return Card(
       child: ListTile(
+        leading: _iconsByName[label.toLowerCase()] ?? SizedBox(width: 32),
         title: Text(
           '${min.toStringAsFixed(1)} - ${max.toStringAsFixed(1)}',
         ),

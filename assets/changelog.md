@@ -8,6 +8,8 @@
 
 - Added remaining missing abilities.
 
+- Added a "Catalog" view, and changed the "Add a card" process to use it.
+
 ## dev: 2023-07-25.1
 
 - Added missing cards, "Rodian Gunslinger", "Bossk", and "Jawa Scavenger".

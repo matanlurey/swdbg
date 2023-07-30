@@ -207,7 +207,7 @@ extension _Imperial on Never {
   static final _deathTrooper = UnitCard(
     faction: Faction.imperial,
     title: 'Death Trooper',
-    cost: 2,
+    cost: 3,
     attack: 3,
     traits: {
       Trait.trooper,
@@ -302,7 +302,7 @@ extension _Imperial on Never {
   static final _imperialShuttle = UnitCard(
     faction: Faction.imperial,
     title: 'Imperial Shuttle',
-    cost: 1,
+    cost: 0,
     resources: 1,
   );
   static final _inqusitor = UnitCard(
@@ -326,7 +326,7 @@ extension _Imperial on Never {
     faction: Faction.imperial,
     title: 'Moff Jerjerrod',
     isUnique: true,
-    cost: 3,
+    cost: 4,
     attack: 2,
     resources: 2,
     traits: {
@@ -417,7 +417,7 @@ extension _Rebel on Never {
   static final _allianceShuttle = UnitCard(
     faction: Faction.rebel,
     title: 'Alliance Shuttle',
-    cost: 1,
+    cost: 0,
     resources: 1,
   );
   static final _bWing = UnitCard(

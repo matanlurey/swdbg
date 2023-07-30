@@ -49,8 +49,7 @@ final class DeckPicker extends StatelessWidget {
       MaterialPageRoute<void>(
         builder: (_) => CatalogView(
           key: _catalogKey,
-          catalog: [...CardDefinitions.instance.allGalaxy]
-            ..sort((a, b) => a.cost.compareTo(b.cost)),
+          catalog: [...CardDefinitions.instance.allGalaxy],
         ),
       ),
     );

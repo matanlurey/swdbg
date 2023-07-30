@@ -56,6 +56,24 @@ final class DeckSummary {
             );
           }
         }
+      } else if (ability is ApplyWhenAbility) {
+        final effect = ability.ability;
+        if (effect is GainAttackAbility) {
+          attack += AttributeSummary(
+            baseTotal: 0,
+            ifConditionIsMet: effect.amount.toDouble(),
+          );
+        } else if (effect is GainResourcesAbility) {
+          resources += AttributeSummary(
+            baseTotal: 0,
+            ifConditionIsMet: effect.amount.toDouble(),
+          );
+        } else if (effect is GainForceAbility) {
+          force += AttributeSummary(
+            baseTotal: 0,
+            ifConditionIsMet: effect.amount.toDouble(),
+          );
+        }
       }
     }
     return DeckSummary(
@@ -72,8 +90,8 @@ final class AttributeSummary {
   /// The base total of the attribute, assuming no player decisions or state.
   final double baseTotal;
 
-  /// Additional attribute amount if the "Force Is With You" is active.
-  final double ifForceIsWithYou;
+  /// Additional attribute amount if a condition is met.
+  final double ifConditionIsMet;
 
   /// Additional attribute amount if the current player opts into increasing.
   ///
@@ -85,7 +103,7 @@ final class AttributeSummary {
   /// Create an attribute summary representing a possible tri-modal state.
   const AttributeSummary({
     required this.baseTotal,
-    this.ifForceIsWithYou = 0,
+    this.ifConditionIsMet = 0,
     this.ifAbilitySelected = 0,
   });
 
@@ -93,7 +111,7 @@ final class AttributeSummary {
   AttributeSummary operator +(AttributeSummary other) {
     return AttributeSummary(
       baseTotal: baseTotal + other.baseTotal,
-      ifForceIsWithYou: ifForceIsWithYou + other.ifForceIsWithYou,
+      ifConditionIsMet: ifConditionIsMet + other.ifConditionIsMet,
       ifAbilitySelected: ifAbilitySelected + other.ifAbilitySelected,
     );
   }
