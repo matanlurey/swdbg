@@ -1,24 +1,27 @@
-part of '../widgets.dart';
+part of '../views.dart';
 
-/// Shows the changelog.
-final class ChangelogDialog extends StatelessWidget {
+/// View that displays the changelog.
+final class ChangelogView extends StatelessWidget {
+  /// Create a new changelog view.
+  const ChangelogView({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: AlertDialog(
-        content: FutureBuilder(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('About'),
+      ),
+      body: Center(
+        child: FutureBuilder(
           // ignore: discarded_futures
           future: DefaultAssetBundle.of(context).loadString(
             'assets/changelog.md',
           ),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return SizedBox(
-                width: 300,
-                child: Markdown(
-                  data: snapshot.data!,
-                  shrinkWrap: true,
-                ),
+              return Markdown(
+                data: snapshot.data!,
+                shrinkWrap: true,
               );
             } else {
               return const Center(

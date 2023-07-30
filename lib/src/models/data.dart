@@ -68,7 +68,7 @@ final class CardDefinitions {
     _Neutral._hwk290,
     _Neutral._ig88,
     _Neutral._jabbasSailBarge,
-    _Neutral._jabbatheHutt,
+    _Neutral._jabbaTheHutt,
     _Neutral._jawaScavenger,
     _Neutral._kelDorMystic,
     _Neutral._landoCalrissian,
@@ -127,6 +127,176 @@ final class CardDefinitions {
 
       // 1x Temple Guardian.
       _Rebel._templeGuardian,
+    ]);
+  }
+
+  /// Create a Galaxy row deck.
+  List<GalaxyCard> galaxyRowDeck() {
+    return List.unmodifiable([
+      // 1x AT-AT
+      _Imperial._atAt,
+
+      // 2x AT-ST
+      for (var i = 0; i < 2; i++) _Imperial._atSt,
+
+      // 1x Admiral Piett
+      _Imperial._admiralPiett,
+
+      // 1x Boba Fett
+      _Imperial._bobaFett,
+
+      // 1x Darth Vader
+      _Imperial._darthVader,
+
+      // 2x Death Trooper
+      for (var i = 0; i < 2; i++) _Imperial._deathTrooper,
+
+      // 1x Director Krennic
+      _Imperial._directorKrennic,
+
+      // 1x General Veers
+      _Imperial._generalVeers,
+
+      // 3x Gozanti Cruiser
+      for (var i = 0; i < 3; i++) _Imperial._gozantiCruiser,
+
+      // 1x Grand Moff Tarkin
+      _Imperial._grandMoffTarkin,
+
+      // 2x Imperial Carrier
+      for (var i = 0; i < 2; i++) _Imperial._imperialCarrier,
+
+      // 2x Landing Craft
+      for (var i = 0; i < 2; i++) _Imperial._landingCraft,
+
+      // 1x Moff Jerjerrod
+      _Imperial._moffJerjerrod,
+
+      // 2x Scout Trooper
+      for (var i = 0; i < 2; i++) _Imperial._scoutTrooper,
+
+      // 2x Star Destroyer
+      for (var i = 0; i < 2; i++) _Imperial._starDestroyer,
+
+      // 2x Tie Bomber
+      for (var i = 0; i < 2; i++) _Imperial._tieBomber,
+
+      // 3x Tie Fighter
+      for (var i = 0; i < 3; i++) _Imperial._tieFighter,
+
+      // 2x Tie Interceptor
+      for (var i = 0; i < 2; i++) _Imperial._tieInterceptor,
+
+      // 2x B-Wing
+      for (var i = 0; i < 2; i++) _Rebel._bWing,
+
+      // 1x Baze Malbus
+      _Rebel._bazeMalbus,
+
+      // 1x Cassian Andor
+      _Rebel._cassianAndor,
+
+      // 1x Chewbacca
+      _Rebel._chewbacca,
+
+      // 1x Chirrut Imwe
+      _Rebel._chirrutImwe,
+
+      // 2x Duros Spy
+      for (var i = 0; i < 2; i++) _Rebel._durosSpy,
+
+      // 2x Hammerhead Corvette
+      for (var i = 0; i < 2; i++) _Rebel._hammerheadCorvette,
+
+      // 1x Han Solo
+      _Rebel._hanSolo,
+
+      // 1x Jyn Erso
+      _Rebel._jynErso,
+
+      // 1x Luke Skywalker
+      _Rebel._lukeSkywalker,
+
+      // 1x Millennium Falcon
+      _Rebel._millenniumFalcon,
+
+      // 2x Mon Calamari Cruiser
+      for (var i = 0; i < 2; i++) _Rebel._monCalamariCruiser,
+
+      // 1x Princess Leia
+      _Rebel._princessLeia,
+
+      // 2x Rebel Commando
+      for (var i = 0; i < 2; i++) _Rebel._rebelCommando,
+
+      // 2x Rebel Transport
+      for (var i = 0; i < 2; i++) _Rebel._rebelTransport,
+
+      // 2x Snowspeeder
+      for (var i = 0; i < 2; i++) _Rebel._snowspeeder,
+
+      // 2x U-Wing
+      for (var i = 0; i < 2; i++) _Rebel._uWing,
+
+      // 3x X-Wing
+      for (var i = 0; i < 3; i++) _Rebel._xWing,
+
+      // 2x Y-Wing
+      for (var i = 0; i < 2; i++) _Rebel._yWing,
+
+      // 3x Blockade Runner
+      for (var i = 0; i < 3; i++) _Neutral._blockadeRunner,
+
+      // 1x Bossk
+      _Neutral._bossk,
+
+      // 2x C-Roc Cruiser
+      for (var i = 0; i < 2; i++) _Neutral._cRocCruiser,
+
+      // 1x Dengar
+      _Neutral._dengar,
+
+      // 2x Fang Fighter
+      for (var i = 0; i < 2; i++) _Neutral._fangFighter,
+
+      // 2x HWK-290
+      for (var i = 0; i < 2; i++) _Neutral._hwk290,
+
+      // 1x IG-88
+      _Neutral._ig88,
+
+      // 1x Jabba's Sail Barge
+      _Neutral._jabbasSailBarge,
+
+      // 1x Jabba the Hutt
+      _Neutral._jabbaTheHutt,
+
+      // 2x Jawa Scavenger
+      for (var i = 0; i < 2; i++) _Neutral._jawaScavenger,
+
+      // 2x Kel Dor Mystic
+      for (var i = 0; i < 2; i++) _Neutral._kelDorMystic,
+
+      // 1x Lando
+      _Neutral._landoCalrissian,
+
+      // 1x Lobot
+      _Neutral._lobot,
+
+      // 2x Nebulon-B Frigate
+      for (var i = 0; i < 2; i++) _Neutral._nebulonBFrigate,
+
+      // 2x Rodian Gunslinger
+      for (var i = 0; i < 2; i++) _Neutral._rodianGunslinger,
+
+      // 2x Quarren Mercenary
+      for (var i = 0; i < 2; i++) _Neutral._quarrenMercenary,
+
+      // 2x Twi'lek Smuggler
+      for (var i = 0; i < 2; i++) _Neutral._twiLekSmuggler,
+
+      // 2x Z-95 Headhunter
+      for (var i = 0; i < 2; i++) _Neutral._z95Headhunter,
     ]);
   }
 }
@@ -821,7 +991,7 @@ extension _Neutral on Never {
       ),
     ),
   );
-  static final _jabbatheHutt = UnitCard(
+  static final _jabbaTheHutt = UnitCard(
     faction: Faction.neutral,
     title: 'Jabba the Hutt',
     isUnique: true,

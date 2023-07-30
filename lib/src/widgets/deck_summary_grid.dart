@@ -49,22 +49,26 @@ final class DeckSummaryGrid extends StatelessWidget {
 }
 
 final class _DeckSummaryGridItem extends StatelessWidget {
-  static final _iconsByName = <String, SvgPicture>{
+  static final _iconsByName = <String, Widget>{
     'attack': SvgPicture.asset(
       'assets/attack.svg',
       width: 32,
       height: 32,
+      colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
     ),
     'resources': SvgPicture.asset(
       'assets/resources.svg',
       width: 32,
       height: 32,
+      colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
     ),
     'force': SvgPicture.asset(
       'assets/force.svg',
       width: 32,
       height: 32,
+      colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
     ),
+    'hit points': Icon(Icons.health_and_safety),
   };
 
   const _DeckSummaryGridItem({

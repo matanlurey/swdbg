@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## dev: 2023-07-30.1
+
+- Major overhaul!
+
 ## dev: 2023-07-29.1
 
 - Added missing cards, "Moff Jerjerrod" and "Deathtrooper".

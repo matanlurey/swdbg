@@ -201,60 +201,23 @@ final class _CatalogViewState extends State<CatalogView> {
               ),
             ),
           ),
-          SliverList.separated(
-            itemCount: _cards.length,
-            itemBuilder: (context, index) {
-              final card = _cards[index];
-              return ListTile(
-                onTap: () async {
-                  // https://github.com/flutter/flutter/issues/87766
-                  // Without this, the onTap closes the dialog!
-                  WidgetsBinding.instance.addPostFrameCallback((_) async {
-                    await showDialog<void>(
-                      context: context,
-                      builder: (_) => PreviewCardDialog(card),
-                    );
-                  });
+          CatalogSliverList(
+            cards: _cards,
+            onCardSelected: (card) async {
+              final action = await PreviewCardSheet.showAndCheckAdd(
+                context,
+                card,
+                actions: {
+                  if (widget.popOnCardSelected) PreviewCardAction.add,
                 },
-                leading: CircleAvatar(
-                  child: Text(card.cost.toString()),
-                  radius: 20,
-                  backgroundColor: card.faction.theme.primaryColor,
-                  foregroundColor: Colors.black,
-                ),
-                title: Text(card.title),
-                subtitle: _CardSubTitle(card),
-                trailing: !widget.popOnCardSelected
-                    ? null
-                    : IconButton(
-                        icon: const Icon(Icons.chevron_right),
-                        onPressed: () {
-                          Navigator.of(context).pop(card);
-                        },
-                      ),
               );
+              if (action == PreviewCardAction.add) {
+                Navigator.of(context).pop(card);
+              }
             },
-            separatorBuilder: (context, index) => const Divider(),
-          )
+          ),
         ],
       ),
     );
-  }
-}
-
-final class _CardSubTitle extends StatelessWidget {
-  final GalaxyCard card;
-
-  const _CardSubTitle(this.card);
-
-  @override
-  Widget build(BuildContext context) {
-    final traits = card is UnitCard
-        ? [
-            'Unit',
-            ...(card as UnitCard).traits.map((t) => t.name.camelToTitleCase())
-          ]
-        : ['Capital Ship'];
-    return Text(traits.join(', '));
   }
 }

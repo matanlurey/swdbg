@@ -1,28 +1,65 @@
 part of '../widgets.dart';
 
-/// A dialog that allows the user to preview a card.
-final class PreviewCardDialog extends StatelessWidget {
-  /// The card to preview.
+/// Action to take when a card is previewed.
+enum PreviewCardAction {
+  /// Add the card to the deck.
+  add,
+
+  /// Remove the card from the deck.
+  exile,
+
+  /// Duplicate the card in the deck.
+  duplicate,
+}
+
+/// Show a preview of the given card.
+final class PreviewCardSheet extends StatelessWidget {
+  /// Show a preview of the given card.
+  ///
+  /// Returns the action taken, if any.
+  static Future<PreviewCardAction?> showAndCheckAdd(
+    BuildContext context,
+    GalaxyCard card, {
+    Set<PreviewCardAction> actions = const {},
+  }) {
+    return showModalBottomSheet<PreviewCardAction>(
+      context: context,
+      builder: (_) => PreviewCardSheet._(
+        card: card,
+        actions: actions,
+      ),
+    );
+  }
+
+  /// Card being previewed.
   final GalaxyCard card;
 
-  /// Create a new preview card dialog.
-  const PreviewCardDialog(this.card);
+  /// Whether to present an option to add the card to the deck.
+  final Set<PreviewCardAction> actions;
+
+  const PreviewCardSheet._({
+    required this.card,
+    this.actions = const {},
+  });
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      content: SizedBox(
-        width: 300,
-        child: _CardPreview(card),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          _CardPreview(card),
+          ButtonBar(
+            children: [
+              for (final action in actions)
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(action),
+                  child: Text(action.name.camelToTitleCase()),
+                ),
+            ],
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('Close'),
-        ),
-      ],
     );
   }
 }
