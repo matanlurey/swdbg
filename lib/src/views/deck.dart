@@ -159,8 +159,11 @@ final class _DeckViewState extends State<DeckView> {
                 )
               else
                 SliverToBoxAdapter(
-                  child: Card(
-                    child: Center(child: Text('TODO')),
+                  child: ExperimentalDeckInsights(
+                    deck: Deck(
+                      faction: widget.initialDeck.faction,
+                      cards: deck,
+                    ),
                   ),
                 ),
               _DeckViewCardList(

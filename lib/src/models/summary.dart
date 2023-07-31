@@ -8,6 +8,9 @@ final class DeckSummary {
   /// Total amount of hit points.
   final AttributeSummary hitPoints;
 
+  /// Total amount of repair.
+  final AttributeSummary repair;
+
   /// Total amount of resources.
   final AttributeSummary resources;
 
@@ -18,6 +21,7 @@ final class DeckSummary {
   const DeckSummary({
     required this.attack,
     required this.hitPoints,
+    required this.repair,
     required this.resources,
     required this.force,
   });
@@ -26,6 +30,7 @@ final class DeckSummary {
   factory DeckSummary.fromDeck(Iterable<GalaxyCard> deck) {
     var attack = AttributeSummary(baseTotal: 0);
     var hitPoints = AttributeSummary(baseTotal: 0);
+    var repair = AttributeSummary(baseTotal: 0);
     var resources = AttributeSummary(baseTotal: 0);
     var force = AttributeSummary(baseTotal: 0);
     for (final card in deck) {
@@ -54,6 +59,11 @@ final class DeckSummary {
               baseTotal: 0,
               ifAbilitySelected: a.amount.toDouble(),
             );
+          } else if (a is RepairBaseAbility) {
+            repair += AttributeSummary(
+              baseTotal: 0,
+              ifAbilitySelected: a.amount.toDouble(),
+            );
           }
         }
       } else if (ability is ApplyWhenAbility) {
@@ -73,12 +83,18 @@ final class DeckSummary {
             baseTotal: 0,
             ifConditionIsMet: effect.amount.toDouble(),
           );
+        } else if (effect is RepairBaseAbility) {
+          repair += AttributeSummary(
+            baseTotal: 0,
+            ifConditionIsMet: effect.amount.toDouble(),
+          );
         }
       }
     }
     return DeckSummary(
       attack: attack,
       hitPoints: hitPoints,
+      repair: repair,
       resources: resources,
       force: force,
     );
@@ -115,4 +131,7 @@ final class AttributeSummary {
       ifAbilitySelected: ifAbilitySelected + other.ifAbilitySelected,
     );
   }
+
+  /// The total amount possible for this attribute.
+  double get maximum => baseTotal + ifConditionIsMet + ifAbilitySelected;
 }

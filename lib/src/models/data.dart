@@ -734,7 +734,7 @@ extension _Rebel on Never {
     faction: Faction.rebel,
     title: 'Luke Skywalker',
     isUnique: true,
-    cost: 6,
+    cost: 8,
     attack: 6,
     force: 2,
     traits: {
@@ -1016,7 +1016,7 @@ extension _Neutral on Never {
     faction: Faction.neutral,
     title: "Jabba's Sail Barge",
     isUnique: true,
-    cost: 6,
+    cost: 7,
     attack: 4,
     resources: 3,
     traits: {
@@ -1147,7 +1147,7 @@ extension _Neutral on Never {
   static final _z95Headhunter = UnitCard(
     faction: Faction.neutral,
     title: 'Z-95 Headhunter',
-    cost: 2,
+    cost: 1,
     attack: 2,
     traits: {
       Trait.fighter,
