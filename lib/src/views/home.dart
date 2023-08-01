@@ -72,10 +72,13 @@ final class HomeView extends StatelessWidget {
             builder: (_) => _ConfigureRandomSheet(),
           );
           if (result != null) {
+            final newInsights =
+                await enableExperimentalInsights.get(preferences);
             await Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (_) => DeckView(
                   initialDeck: result,
+                  showNewInsights: newInsights,
                 ),
               ),
             );
@@ -86,14 +89,19 @@ final class HomeView extends StatelessWidget {
         icon: const Icon(Icons.file_download),
         label: 'Import',
         onPressed: () async {
-          final deck = await import();
-          final newInsights = await enableExperimentalInsights.get(preferences);
-          if (deck != null) {
+          // Show a bottom sheet with the import options.
+          final result = await showModalBottomSheet<Deck>(
+            context: context,
+            builder: (_) => _ImportDeckSheet(),
+          );
+          if (result != null) {
+            final newInsights =
+                await enableExperimentalInsights.get(preferences);
             await Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (_) => DeckView(
+                  initialDeck: result,
                   showNewInsights: newInsights,
-                  initialDeck: deck,
                 ),
               ),
             );
@@ -195,6 +203,153 @@ final class _Button extends StatelessWidget {
       title: Text(label),
       trailing: Icon(Icons.chevron_right),
       onTap: onPressed,
+    );
+  }
+}
+
+final class _ImportDeckSheet extends StatelessWidget {
+  const _ImportDeckSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        children: [
+          // Header
+          Text(
+            'Import Deck',
+            style: theme.textTheme.titleSmall,
+          ),
+
+          Text(
+            'Recent Autosaves',
+          ),
+
+          // Recent
+          Expanded(
+            child: FutureBuilder(
+              // ignore: discarded_futures
+              future: fetchAutoSaves(),
+
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+
+                final decks = snapshot.data!;
+
+                return ListView.separated(
+                  itemBuilder: (_, i) {
+                    final deck = decks[i].$1;
+                    final time = decks[i].$2;
+                    // ignore: avoid_types_on_closure_parameters
+                    final preview = (List<GalaxyCard> cards) {
+                      cards.sort((a, b) => b.cost.compareTo(a.cost));
+                      final titles = cards.map((c) => c.title).toSet();
+                      return titles.take(2).join(', ');
+                    }(deck.cards.toList());
+                    return Dismissible(
+                      key: ValueKey(deck.uri),
+                      background: _DismissBackground.leftToRight(),
+                      secondaryBackground: _DismissBackground.rightToLeft(),
+                      onDismissed: (_) async {
+                        await File.fromUri(deck.uri!).delete();
+                      },
+                      child: ListTile(
+                        onTap: () async {
+                          await Navigator.of(context).pushReplacement(
+                            MaterialPageRoute<void>(
+                              builder: (_) => DeckView(
+                                showNewInsights: true,
+                                initialDeck: deck,
+                              ),
+                            ),
+                          );
+                        },
+                        leading: SizedBox(
+                          child: FactionIcon(
+                            faction: deck.faction,
+                            colorFilter: ColorFilter.mode(
+                              deck.faction.theme.primaryColor,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          width: 24,
+                          height: 24,
+                        ),
+                        title: Text(
+                          '${deck.cards.length} Cards',
+                        ),
+                        subtitle: Text(
+                          '${timeago.format(time).capitalize()}\n'
+                          '$preview, ...',
+                        ),
+                        isThreeLine: true,
+                        trailing: Icon(Icons.file_open),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (_, __) => const Divider(),
+                  itemCount: decks.length,
+                );
+              },
+            ),
+          ),
+
+          // Buttons
+          ButtonBar(
+            children: [
+              TextButton.icon(
+                onPressed: () async {
+                  final deck = await import();
+                  if (deck == null) {
+                    return;
+                  }
+                  await Navigator.of(context).pushReplacement(
+                    MaterialPageRoute<void>(
+                      builder: (_) => DeckView(
+                        initialDeck: deck,
+                      ),
+                    ),
+                  );
+                },
+                icon: Icon(Icons.upload_file),
+                label: Text('Pick file'),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
+final class _DismissBackground extends StatelessWidget {
+  final MainAxisAlignment _mainAxisAlignment;
+
+  const _DismissBackground.leftToRight()
+      : _mainAxisAlignment = MainAxisAlignment.start;
+
+  const _DismissBackground.rightToLeft()
+      : _mainAxisAlignment = MainAxisAlignment.end;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: _mainAxisAlignment,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: const Icon(
+              Icons.delete,
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

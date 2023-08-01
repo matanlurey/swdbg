@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## Next
+
+- [x] Suggest a file name other than "deck.json" when exporting/saving.
+- [ ] Automatically save the deck when the app is backgrounded or similar.
+- [ ] Import should show recent decks, or the option to browse for a file.
+- [ ] Finish migrating to the new deck insights panel.
+- [ ] Explore options for sharing a deck with another person.
+
+## dev: 2023-08-01.1
+
 ## dev: 2023-07.30.2
 
 - Added undo option for add/remove.

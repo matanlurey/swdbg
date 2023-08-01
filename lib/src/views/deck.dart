@@ -70,48 +70,113 @@ final class DeckView extends StatefulWidget {
 final class _DeckViewState extends State<DeckView> {
   final deck = <GalaxyCard>[];
   late DeckSort sorter;
+  Uri? _lastUriIfAny;
 
   @override
   void initState() {
     super.initState();
     deck.addAll(widget.initialDeck.cards);
     sorter = widget.initialSort;
+
+    if (widget.initialDeck.autoSaved) {
+      _lastUriIfAny = widget.initialDeck.uri;
+    }
   }
 
-  void _promptUndoAdd(GalaxyCard card) {
+  @override
+  void activate() {
+    super.activate();
+    ServicesBinding.instance.restorationManager.addListener(_autoSaveDeck);
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    ServicesBinding.instance.restorationManager.removeListener(_autoSaveDeck);
+  }
+
+  /// If the app has been placed in the background, auto-save the deck.
+  Future<void> _autoSaveDeck() async {
+    // If we've dismounted.
+    if (!mounted) {
+      return;
+    }
+
+    // If the deck only has starter cards, do not save.
+    if (deck.every((e) => e.isStarter)) {
+      return;
+    }
+
+    // If the deck has not changed, do not save.
+    if (const UnorderedIterableEquality<void>().equals(
+      widget.initialDeck.cards.map((c) => c.title),
+      deck.map((c) => c.title),
+    )) {
+      return;
+    }
+
+    _lastUriIfAny = await autoSave(Deck(
+      faction: widget.initialDeck.faction,
+      cards: deck,
+      autoSaved: true,
+      uri: _lastUriIfAny,
+    ));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          'Added ${card.title} to Deck.',
-        ),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            setState(deck.removeLast);
-          },
-        ),
+        content: Text('Deck automatically saved (Import > Recent).'),
       ),
     );
+  }
+
+  void _promptUndoAdd(GalaxyCard card) async {
+    await ScaffoldMessenger.of(context)
+        .showSnackBar(
+          SnackBar(
+            content: Text(
+              'Added ${card.title} to Deck.',
+            ),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                setState(deck.removeLast);
+              },
+            ),
+          ),
+        )
+        .closed;
+    await _autoSaveDeck();
+  }
+
+  void _promptUndoRemove(GalaxyCard card, int atIndex) async {
+    await ScaffoldMessenger.of(context)
+        .showSnackBar(
+          SnackBar(
+            content: Text(
+              'Removed ${card.title} from Deck.',
+            ),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                setState(() {
+                  deck.insert(atIndex, card);
+                });
+              },
+            ),
+          ),
+        )
+        .closed;
+    await _autoSaveDeck();
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // If the deck is the same as the initial deck, don't prompt the user.
-        if (const UnorderedIterableEquality<void>().equals(
-          deck,
-          widget.initialDeck.cards,
-        )) {
-          return true;
-        }
+        // Auto-save the deck.
+        await _autoSaveDeck();
 
-        // Prompt the user to confirm that they want to leave the deck.
-        final result = await showDialog<bool>(
-          context: context,
-          builder: (_) => _ConfirmWillPop(),
-        );
-        return result ?? false;
+        // Allow exiting.
+        return true;
       },
       child: Theme(
         data: widget.initialDeck.faction.theme,
@@ -177,31 +242,13 @@ final class _DeckViewState extends State<DeckView> {
                   });
                 },
                 onCardRemoved: (card, index) {
-                  void promptUndo(GalaxyCard card, int atIndex) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Removed ${card.title} from Deck.',
-                        ),
-                        action: SnackBarAction(
-                          label: 'Undo',
-                          onPressed: () {
-                            setState(() {
-                              deck.insert(atIndex, card);
-                            });
-                          },
-                        ),
-                      ),
-                    );
-                  }
-
                   setState(() {
                     // If index is set, remove the Nth appearance of the card.
                     for (var i = 0; i < deck.length; i++) {
                       if (deck[i].title == card.title) {
                         if (index == 0) {
                           deck.removeAt(i);
-                          promptUndo(card, i);
+                          _promptUndoRemove(card, i);
                           break;
                         }
                         index--;
@@ -218,31 +265,6 @@ final class _DeckViewState extends State<DeckView> {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// Used as an alert dialog to confirm that the user wants to leave the deck.
-final class _ConfirmWillPop extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Are you sure?'),
-      content: const Text('You have unsaved changes.'),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(false);
-          },
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(true);
-          },
-          child: const Text('Discard'),
-        ),
-      ],
     );
   }
 }
