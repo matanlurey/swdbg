@@ -1,106 +1,111 @@
 part of '../widgets.dart';
 
-/// Shows aggregate information about a deck.
-///
-/// Includes:
-/// - Average attack per turn.
-/// - Average defense per turn.
-/// - Average resources per turn.
-/// - Average force per turn.
-final class DeckInsights extends StatelessWidget {
-  /// Create a new deck summary grid.
-  const DeckInsights({
+/// ...
+final class ExperimentalDeckInsights extends StatelessWidget {
+  /// Deck to analyze.
+  final Deck deck;
+
+  /// ...
+  const ExperimentalDeckInsights({
     required this.deck,
   });
 
-  /// The deck to summarize.
-  final List<GalaxyCard> deck;
+  static final _attackIcon = SvgPicture.asset(
+    'assets/attack.svg',
+    height: 24,
+    colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
+  );
+
+  static final _resourcesIcon = SvgPicture.asset(
+    'assets/resources.svg',
+    height: 24,
+    colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
+  );
+
+  static final _forceIcon = SvgPicture.asset(
+    'assets/force.svg',
+    height: 24,
+    colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
+  );
+
+  static final _hitPointsIcon = Icon(
+    Icons.health_and_safety,
+    color: Colors.grey,
+    size: 24,
+  );
+
+  static final _healingIcon = Icon(
+    Icons.healing,
+    color: Colors.grey,
+    size: 24,
+  );
+
+  double _compute(AttributeSummary value) {
+    return value.maximum * 5 / deck.cards.length;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final summary = DeckSummary.fromDeck(deck);
-    return SliverGrid.count(
-      crossAxisCount: 2,
-      childAspectRatio: 2.5,
-      children: [
-        _DeckSummaryGridItem(
-          label: 'Attack',
-          value: summary.attack,
-          deckLength: deck.length,
+    final summary = DeckSummary.fromDeck(deck.cards);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 4,
         ),
-        _DeckSummaryGridItem(
-          label: 'Hit Points',
-          value: summary.hitPoints,
-          deckLength: deck.length,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _InsightAttribute(
+                  icon: _attackIcon,
+                  value: _compute(summary.attack),
+                ),
+                _InsightAttribute(
+                  icon: _resourcesIcon,
+                  value: _compute(summary.resources),
+                ),
+                _InsightAttribute(
+                  icon: _forceIcon,
+                  value: _compute(summary.force),
+                ),
+                _InsightAttribute(
+                  icon: _hitPointsIcon,
+                  value: _compute(summary.hitPoints),
+                ),
+                _InsightAttribute(
+                  icon: _healingIcon,
+                  value: _compute(summary.repair),
+                ),
+              ],
+            ),
+          ],
         ),
-        _DeckSummaryGridItem(
-          label: 'Resources',
-          value: summary.resources,
-          deckLength: deck.length,
-        ),
-        _DeckSummaryGridItem(
-          label: 'Force',
-          value: summary.force,
-          deckLength: deck.length,
-        ),
-      ],
+      ),
     );
   }
 }
 
-final class _DeckSummaryGridItem extends StatelessWidget {
-  static final _iconsByName = <String, Widget>{
-    'attack': SvgPicture.asset(
-      'assets/attack.svg',
-      width: 32,
-      height: 32,
-      colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
-    ),
-    'resources': SvgPicture.asset(
-      'assets/resources.svg',
-      width: 32,
-      height: 32,
-      colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
-    ),
-    'force': SvgPicture.asset(
-      'assets/force.svg',
-      width: 32,
-      height: 32,
-      colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
-    ),
-    'hit points': Icon(Icons.health_and_safety),
-  };
+final class _InsightAttribute extends StatelessWidget {
+  final Widget icon;
+  final double value;
 
-  const _DeckSummaryGridItem({
-    required this.label,
+  const _InsightAttribute({
+    required this.icon,
     required this.value,
-    required this.deckLength,
   });
-
-  final String label;
-  final AttributeSummary value;
-  final int deckLength;
 
   @override
   Widget build(BuildContext context) {
-    var min = value.baseTotal * 5 / deckLength;
-    var max =
-        (value.baseTotal + value.ifAbilitySelected + value.ifConditionIsMet) *
-            5 /
-            deckLength;
-    if (min.isNaN) {
-      min = 0;
-    }
-    if (max.isNaN) {
-      max = 0;
-    }
-    return Card(
-      child: ListTile(
-        leading: _iconsByName[label.toLowerCase()] ?? SizedBox(width: 32),
-        title: Text(
-          '${min.toStringAsFixed(1)} - ${max.toStringAsFixed(1)}',
+    return TextButton.icon(
+      onPressed: () {},
+      icon: icon,
+      label: Text(
+        value.toStringAsFixed(1),
+        style: TextStyle(
+          color: Colors.grey,
         ),
-        subtitle: Text(label),
       ),
     );
   }

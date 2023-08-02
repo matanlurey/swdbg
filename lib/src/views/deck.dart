@@ -52,14 +52,10 @@ final class DeckView extends StatefulWidget {
   /// The initial sorting method.
   final DeckSort initialSort;
 
-  /// Whether to show the new insights panel.
-  final bool showNewInsights;
-
   /// Create a new deck view.
   const DeckView({
     required this.initialDeck,
     this.initialSort = DeckSort.mostExpensive,
-    this.showNewInsights = false,
     super.key,
   });
 
@@ -70,6 +66,8 @@ final class DeckView extends StatefulWidget {
 final class _DeckViewState extends State<DeckView> {
   final deck = <GalaxyCard>[];
   late DeckSort sorter;
+
+  var _showedAutoSaveNotice = false;
   Uri? _lastUriIfAny;
 
   @override
@@ -121,9 +119,15 @@ final class _DeckViewState extends State<DeckView> {
       autoSaved: true,
       uri: _lastUriIfAny,
     ));
+
+    if (_showedAutoSaveNotice) {
+      return;
+    }
+
+    _showedAutoSaveNotice = true;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Deck automatically saved (Import > Recent).'),
+        content: Text('TIP: Deck automatically saved (Import > Recent).'),
       ),
     );
   }
@@ -218,19 +222,14 @@ final class _DeckViewState extends State<DeckView> {
                   });
                 },
               ),
-              if (!widget.showNewInsights)
-                DeckInsights(
-                  deck: deck,
-                )
-              else
-                SliverToBoxAdapter(
-                  child: ExperimentalDeckInsights(
-                    deck: Deck(
-                      faction: widget.initialDeck.faction,
-                      cards: deck,
-                    ),
+              SliverToBoxAdapter(
+                child: ExperimentalDeckInsights(
+                  deck: Deck(
+                    faction: widget.initialDeck.faction,
+                    cards: deck,
                   ),
                 ),
+              ),
               _DeckViewCardList(
                 cards: () {
                   return deck.toList()..sort(sorter.comparator);

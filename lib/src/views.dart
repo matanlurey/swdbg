@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '/src/actions.dart';
-import '/src/flags.dart';
 import '/src/models.dart' hide Card;
 import '/src/themes.dart';
 import '/src/utils.dart';

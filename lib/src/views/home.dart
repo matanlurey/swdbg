@@ -24,11 +24,9 @@ final class HomeView extends StatelessWidget {
         ),
         label: 'Rebel Alliance',
         onPressed: () async {
-          final newInsights = await enableExperimentalInsights.get(preferences);
           await Navigator.of(context).push(
             MaterialPageRoute<void>(
               builder: (_) => DeckView(
-                showNewInsights: newInsights,
                 initialDeck: Deck(
                   faction: Faction.rebel,
                   cards: CardDefinitions.instance.rebelStarterDeck(),
@@ -48,11 +46,9 @@ final class HomeView extends StatelessWidget {
         ),
         label: 'Galactic Empire',
         onPressed: () async {
-          final newInsights = await enableExperimentalInsights.get(preferences);
           await Navigator.of(context).push(
             MaterialPageRoute<void>(
               builder: (_) => DeckView(
-                showNewInsights: newInsights,
                 initialDeck: Deck(
                   faction: Faction.imperial,
                   cards: CardDefinitions.instance.imperialStarterDeck(),
@@ -72,13 +68,10 @@ final class HomeView extends StatelessWidget {
             builder: (_) => _ConfigureRandomSheet(),
           );
           if (result != null) {
-            final newInsights =
-                await enableExperimentalInsights.get(preferences);
             await Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (_) => DeckView(
                   initialDeck: result,
-                  showNewInsights: newInsights,
                 ),
               ),
             );
@@ -95,13 +88,10 @@ final class HomeView extends StatelessWidget {
             builder: (_) => _ImportDeckSheet(),
           );
           if (result != null) {
-            final newInsights =
-                await enableExperimentalInsights.get(preferences);
             await Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (_) => DeckView(
                   initialDeck: result,
-                  showNewInsights: newInsights,
                 ),
               ),
             );
@@ -262,7 +252,6 @@ final class _ImportDeckSheet extends StatelessWidget {
                           await Navigator.of(context).pushReplacement(
                             MaterialPageRoute<void>(
                               builder: (_) => DeckView(
-                                showNewInsights: true,
                                 initialDeck: deck,
                               ),
                             ),
